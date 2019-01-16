@@ -1,0 +1,94 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "version" : "1.5.0",
+    "title" : "SwingPulse"
+  },
+  "host" : "swingpulse.com",
+  "basePath" : "/api/v1",
+  "schemes" : [ "https" ],
+  "produces" : [ "application/json" ],
+  "paths" : {
+    "/events" : {
+      "get" : {
+        "parameters" : [ {
+          "name" : "sortBy",
+          "in" : "query",
+          "description" : "dStartsAt or -dStartsAt || dEndsAt || -dEndsAt",
+          "required" : false,
+          "type" : "string",
+          "format" : "double",
+          "enum" : [ "dStartsAt", "-dStartsAt", "dEndsAt", "-dEndsAt" ]
+        }, {
+          "name" : "limit",
+          "in" : "query",
+          "required" : false,
+          "type" : "number",
+          "maximum" : 100,
+          "minimum" : 1
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "title" : "Events",
+              "type" : "array",
+              "items" : {
+                "type" : "object",
+                "title" : "Event",
+                "properties" : {
+                  "title" : {
+                    "type" : "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "parameters" : [ {
+          "name" : "name",
+          "in" : "query",
+          "required" : true,
+          "type" : "string",
+          "format" : "double"
+        }, {
+          "name" : "title",
+          "in" : "query",
+          "description" : "Trololo sa",
+          "required" : true,
+          "type" : "string",
+          "format" : "double"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Cool",
+            "schema" : {
+              "title" : "Events",
+              "type" : "array",
+              "items" : {
+                "type" : "object",
+                "title" : "Event",
+                "properties" : {
+                  "title" : {
+                    "type" : "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "Event" : {
+      "properties" : {
+        "title" : {
+          "type" : "string"
+        }
+      }
+    }
+  }
+}
