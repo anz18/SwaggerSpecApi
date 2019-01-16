@@ -1,0 +1,61 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "API to work with inceptas dental platform",
+    "version" : "2",
+    "title" : "Inceptas API"
+  },
+  "paths" : {
+    "/" : {
+      "get" : {
+        "description" : "Echo API with no parameters",
+        "operationId" : "echo_no_params",
+        "produces" : [ "application/json", "application/xml", "text/xml", "text/html" ],
+        "parameters" : [ {
+          "name" : "user_key",
+          "in" : "query",
+          "description" : "Your API access key",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "response"
+          },
+          "default" : {
+            "description" : "unexpected error"
+          }
+        }
+      }
+    },
+    "/{echo}" : {
+      "get" : {
+        "description" : "Echo API with parameters",
+        "operationId" : "echo_with_params",
+        "produces" : [ "application/json", "application/xml", "text/xml", "text/html" ],
+        "parameters" : [ {
+          "name" : "echo",
+          "in" : "path",
+          "description" : "The string to be echoed",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "user_key",
+          "in" : "query",
+          "description" : "Your API access key",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "response"
+          },
+          "default" : {
+            "description" : "unexpected error"
+          }
+        }
+      }
+    }
+  },
+  "definitions" : { }
+}
