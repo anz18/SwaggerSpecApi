@@ -1,0 +1,179 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "shows messages to user and controls CGN App",
+    "version" : "1",
+    "title" : "so simple",
+    "contact" : {
+      "name" : "norm-4 GmbH",
+      "url" : "www.norm-4.com",
+      "email" : "cem@norm-4.com"
+    }
+  },
+  "host" : "www.koeln-bonn-airport.de",
+  "basePath" : "/rest/v1/api",
+  "schemes" : [ "http", "https" ],
+  "produces" : [ "application/json" ],
+  "security" : [ {
+    "basicAuth" : [ ]
+  } ],
+  "paths" : {
+    "/api" : { },
+    "/cgnusermessage" : {
+      "get" : {
+        "description" : "shows messages to user and controls CGN App",
+        "operationId" : "usermessageGET",
+        "consumes" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "X-UserId",
+          "in" : "header",
+          "description" : "specifies the user id",
+          "required" : true,
+          "type" : "string",
+          "default" : "theFlash"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns an array of CGNUserMessages",
+            "schema" : {
+              "$ref" : "#/definitions/CGNUserMessages"
+            }
+          },
+          "400" : {
+            "description" : "Request does not adhere to the expected schema",
+            "schema" : {
+              "$ref" : "#/definitions/ResponseMessage"
+            }
+          }
+        }
+      },
+      "put" : {
+        "description" : "shows messages to user and controls CGN App",
+        "operationId" : "usermessagePUT",
+        "consumes" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "description" : "Request body",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/CGNUserMessage"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/ResponseMessage"
+            }
+          },
+          "400" : {
+            "description" : "Request does not adhere to the expected schema",
+            "schema" : {
+              "$ref" : "#/definitions/ResponseMessage"
+            }
+          }
+        }
+      }
+    }
+  },
+  "securityDefinitions" : {
+    "basicAuth" : {
+      "description" : "HTTP Basic Authentication. Works over `HTTP`",
+      "type" : "basic"
+    }
+  },
+  "definitions" : {
+    "ResponseMessage" : {
+      "properties" : {
+        "systemMessage" : {
+          "type" : "string",
+          "description" : "Technical response message"
+        },
+        "errorCode" : {
+          "type" : "string",
+          "description" : "An error code"
+        },
+        "errorDetail" : {
+          "$ref" : "#/definitions/ErrorDetail"
+        }
+      }
+    },
+    "ErrorDetail" : {
+      "properties" : {
+        "clazz" : {
+          "type" : "string",
+          "description" : "the server class / location that identified the error"
+        },
+        "id" : {
+          "type" : "string",
+          "description" : "id of the affected entity instance"
+        },
+        "message" : {
+          "type" : "string"
+        }
+      },
+      "description" : "Detailed error messages"
+    },
+    "CGNUserMessages" : {
+      "properties" : {
+        "messages" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/CGNUserMessage"
+          }
+        }
+      },
+      "description" : "array of umessages"
+    },
+    "CGNUserMessage" : {
+      "required" : [ "mtype", "timestamp", "uid" ],
+      "properties" : {
+        "uid" : {
+          "type" : "string",
+          "description" : "UID of the app user."
+        },
+        "timestamp" : {
+          "type" : "integer",
+          "description" : "when the message was emitted"
+        },
+        "mtype" : {
+          "type" : "string",
+          "description" : "Id as provided by the external system",
+          "enum" : [ "message", "warning", "silent" ]
+        },
+        "title" : {
+          "type" : "string",
+          "description" : "title of message or warning"
+        },
+        "content" : {
+          "type" : "string",
+          "description" : "content of message or warning"
+        },
+        "couponId" : {
+          "type" : "integer",
+          "description" : "Coupon to display directly (silent) or after message"
+        },
+        "pageId" : {
+          "type" : "integer",
+          "description" : "Page to display directly (silent) or after message"
+        },
+        "flightId" : {
+          "type" : "integer",
+          "description" : "Flight to display directly (silent) or after message"
+        }
+      },
+      "description" : "message or control to perform on app"
+    }
+  },
+  "parameters" : {
+    "UserId" : {
+      "name" : "X-UserId",
+      "in" : "header",
+      "description" : "specifies the user id",
+      "required" : true,
+      "type" : "string",
+      "default" : "theFlash"
+    }
+  }
+}
