@@ -1,0 +1,605 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "version" : "1.0",
+    "title" : "Bapi API"
+  },
+  "paths" : {
+    "/tenants" : {
+      "get" : {
+        "description" : "Gets `tenant` objects.\n",
+        "parameters" : [ {
+          "name" : "service_id",
+          "in" : "query",
+          "description" : "service id to filter the tenants",
+          "required" : false,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "title" : "ArrayOfTenants",
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Tenant"
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "description" : "Create new tenant.\n",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "tenant",
+          "description" : "The tenant in JSON you want to post",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/TenantReq"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/Tenant"
+            }
+          }
+        }
+      }
+    },
+    "/tenants/{tenant_id}" : {
+      "get" : {
+        "description" : "Gets `tenantInfo` objects of given tenant_id.\n",
+        "parameters" : [ {
+          "name" : "tenant_id",
+          "in" : "path",
+          "description" : "ID of tenant to fetch",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "title" : "ArrayOfTenantInfo",
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/TenantInfo"
+              }
+            }
+          }
+        }
+      },
+      "put" : {
+        "description" : "Update exsiting tenant.\n",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "tenant_id",
+          "in" : "path",
+          "description" : "ID of tenant to be overwritten",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "tenant",
+          "description" : "The tenant in JSON you want to post",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/TenantReq"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/Tenant"
+            }
+          },
+          "404" : {
+            "description" : "Tenant not found"
+          }
+        }
+      },
+      "delete" : {
+        "description" : "delete the tenant information of corresponding id\n",
+        "parameters" : [ {
+          "name" : "tenant_id",
+          "in" : "path",
+          "description" : "ID of tenant to be deleted",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          },
+          "404" : {
+            "description" : "Tenant not found"
+          }
+        }
+      }
+    },
+    "/tenants/{tenant_id}/roles" : {
+      "get" : {
+        "description" : "Gets `tenantRole` objects of given tenant_id\n",
+        "parameters" : [ {
+          "name" : "tenant_id",
+          "in" : "path",
+          "description" : "ID of tenant to fetch",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "idm_group_id",
+          "in" : "query",
+          "description" : "ID of identification manager group.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "role_id",
+          "in" : "query",
+          "description" : "ID of role.",
+          "required" : false,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "title" : "ArrayOfTenantRoles",
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/TenantRole"
+              }
+            }
+          }
+        }
+      },
+      "delete" : {
+        "description" : "Delete `tenantRole` objects of given tenant_id\n",
+        "parameters" : [ {
+          "name" : "tenant_id",
+          "in" : "path",
+          "description" : "ID of tenant to fetch",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "idm_group_id",
+          "in" : "query",
+          "description" : "ID of identification manager group.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "role_id",
+          "in" : "query",
+          "description" : "ID of role.",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        }
+      }
+    },
+    "/services" : {
+      "get" : {
+        "description" : "Gets `service` objects.\n",
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "title" : "ArrayOfServices",
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Service"
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "description" : "Add a new service\n",
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        }
+      }
+    },
+    "/services/{service_id}" : {
+      "get" : {
+        "description" : "Get the `service` object with given id\n",
+        "parameters" : [ {
+          "name" : "service_id",
+          "in" : "path",
+          "description" : "ID of service",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "title" : "ArrayOfServices",
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Service"
+              }
+            }
+          }
+        }
+      },
+      "put" : {
+        "description" : "update or create service\n",
+        "parameters" : [ {
+          "name" : "service_id",
+          "in" : "path",
+          "description" : "ID of service to be overwritten",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "service",
+          "description" : "Service",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/Service"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        }
+      },
+      "delete" : {
+        "description" : "delete the service\n",
+        "parameters" : [ {
+          "name" : "service_id",
+          "in" : "path",
+          "description" : "ID of service to be overwritten",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        }
+      }
+    },
+    "/roles" : {
+      "get" : {
+        "description" : "Gets `role` objects.\n",
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "title" : "ArrayOfRoles",
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Role"
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "description" : "Add a new role\n",
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        }
+      }
+    },
+    "/roles/{role_id}" : {
+      "get" : {
+        "description" : "Get the `role` object with given id\n",
+        "parameters" : [ {
+          "name" : "role_id",
+          "in" : "path",
+          "description" : "ID of role",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "title" : "ArrayOfRoles",
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Role"
+              }
+            }
+          }
+        }
+      },
+      "put" : {
+        "description" : "update or create role\n",
+        "parameters" : [ {
+          "name" : "role_id",
+          "in" : "path",
+          "description" : "ID of role to be overwritten",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "role",
+          "description" : "Role",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/Role"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        }
+      },
+      "delete" : {
+        "description" : "delete the role\n",
+        "parameters" : [ {
+          "name" : "role_id",
+          "in" : "path",
+          "description" : "ID of role to be delete",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        }
+      }
+    },
+    "/idmGroups" : {
+      "get" : {
+        "description" : "get list of \"idmGroup\" objects\n",
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "title" : "ArrayOfIdmGroups",
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/IdmGroup"
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "description" : "Add a new idmGroup\n",
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        }
+      }
+    },
+    "/idmGroups/{idm_group_id}" : {
+      "get" : {
+        "description" : "Get the `idmGroup` object with given id\n",
+        "parameters" : [ {
+          "name" : "idm_group_id",
+          "in" : "path",
+          "description" : "ID of identification manager",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/IdmGroup"
+            }
+          }
+        }
+      },
+      "put" : {
+        "description" : "update or create role\n",
+        "parameters" : [ {
+          "name" : "idm_group_id",
+          "in" : "path",
+          "description" : "ID of idm group to be overwritten",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "idmGroup",
+          "description" : "idmGroup",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/IdmGroup"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        }
+      },
+      "delete" : {
+        "description" : "delete the role\n",
+        "parameters" : [ {
+          "name" : "idm_group_id",
+          "in" : "path",
+          "description" : "ID of idm group to be delete",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "Tenant" : {
+      "required" : [ "service_id", "tenant_id", "tenant_name" ],
+      "properties" : {
+        "tenant_id" : {
+          "type" : "string",
+          "description" : "tenant id"
+        },
+        "tenant_name" : {
+          "type" : "string",
+          "description" : "tenant name"
+        },
+        "service_id" : {
+          "type" : "integer",
+          "description" : "service id"
+        }
+      },
+      "description" : "Tenant Object"
+    },
+    "Service" : {
+      "required" : [ "service_id", "service_name" ],
+      "properties" : {
+        "service_id" : {
+          "type" : "integer",
+          "description" : "service id"
+        },
+        "service_name" : {
+          "type" : "string",
+          "description" : "service name"
+        }
+      },
+      "description" : "Service Object"
+    },
+    "Role" : {
+      "properties" : {
+        "role_id" : {
+          "type" : "integer",
+          "description" : "role id"
+        },
+        "role_name" : {
+          "type" : "string",
+          "description" : "role name"
+        }
+      },
+      "description" : "Role Object"
+    },
+    "TenantRole" : {
+      "required" : [ "idm_group_id", "role_id", "tenant_email", "tenant_id" ],
+      "properties" : {
+        "tenant_id" : {
+          "type" : "string",
+          "description" : "tenant id"
+        },
+        "role_id" : {
+          "type" : "integer",
+          "description" : "tenant role"
+        },
+        "idm_group_id" : {
+          "type" : "string",
+          "description" : "identification manager group id"
+        },
+        "tenant_email" : {
+          "type" : "string",
+          "description" : "tenant admin email"
+        }
+      },
+      "description" : "Tenant Role Object"
+    },
+    "IdmGroup" : {
+      "required" : [ "idm_group_id" ],
+      "properties" : {
+        "idm_group_id" : {
+          "type" : "string",
+          "description" : "ID of identification manager group"
+        },
+        "endpoint" : {
+          "type" : "string",
+          "description" : "url endpoint of idm"
+        },
+        "idm_data" : {
+          "type" : "string",
+          "description" : "idm that the idm group is using"
+        }
+      },
+      "description" : "Identification Manager Group Object"
+    },
+    "TenantInfo" : {
+      "required" : [ "idm_group_id", "role_id", "role_name", "service_id", "service_name", "tenant_email", "tenant_id", "tenant_name" ],
+      "properties" : {
+        "tenant_id" : {
+          "type" : "string",
+          "description" : "tenant id"
+        },
+        "tenant_name" : {
+          "type" : "string",
+          "description" : "tenant name"
+        },
+        "service_id" : {
+          "type" : "integer",
+          "description" : "service id of tenant"
+        },
+        "service_name" : {
+          "type" : "string",
+          "description" : "service name of tenant"
+        },
+        "role_id" : {
+          "type" : "integer",
+          "description" : "role id of tenant"
+        },
+        "role_name" : {
+          "type" : "string",
+          "description" : "role name of tenant"
+        },
+        "idm_group_id" : {
+          "type" : "string",
+          "description" : "identification manager group id"
+        },
+        "tenant_email" : {
+          "type" : "string",
+          "description" : "tenant admin email"
+        }
+      },
+      "description" : "Tenant Info Object"
+    },
+    "TenantReq" : {
+      "required" : [ "idm_group_id", "role_id", "service_id", "tenant_email", "tenant_name" ],
+      "properties" : {
+        "tenant_name" : {
+          "type" : "string",
+          "description" : "tenant name"
+        },
+        "service_id" : {
+          "type" : "integer",
+          "description" : "service id of tenant"
+        },
+        "role_id" : {
+          "type" : "integer",
+          "description" : "role id"
+        },
+        "idm_group_id" : {
+          "type" : "string",
+          "description" : "identification manager group id"
+        },
+        "tenant_email" : {
+          "type" : "string",
+          "description" : "tenant admin email"
+        }
+      },
+      "description" : "Tenant Request Object"
+    }
+  }
+}
