@@ -1,0 +1,2372 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "Omega Project, you know...",
+    "version" : "1.0.0",
+    "title" : "Omega API"
+  },
+  "host" : "176.117.152.120:8080",
+  "basePath" : "/api/v1",
+  "schemes" : [ "http" ],
+  "consumes" : [ "application/json" ],
+  "produces" : [ "application/json" ],
+  "paths" : {
+    "/user/create" : {
+      "post" : {
+        "tags" : [ "User Service" ],
+        "description" : "Create new user.\n",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "",
+          "description" : "New user data",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/"
+          }
+        } ],
+        "responses" : {
+          "201" : {
+            "description" : "User was successfully created",
+            "schema" : {
+              "$ref" : "#/definitions/User"
+            }
+          },
+          "400" : {
+            "description" : "User creation was not successfull"
+          }
+        }
+      }
+    },
+    "/user" : {
+      "put" : {
+        "tags" : [ "User Service" ],
+        "description" : "Update user.\n",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "",
+          "description" : "Updated user data",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/_1"
+          }
+        } ],
+        "responses" : {
+          "201" : {
+            "description" : "User was successfully updated",
+            "schema" : {
+              "$ref" : "#/definitions/User"
+            }
+          }
+        }
+      }
+    },
+    "/user/login" : {
+      "post" : {
+        "tags" : [ "User Service" ],
+        "description" : "Authenticates user with username and password. Upon successfull authentication the service returns an access token and user profile data. Access token is used to authenticate further requests by setting 'X-User-Token' header to the returned value.\n",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "",
+          "description" : "User credentials",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/_2"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful user authentication response",
+            "schema" : {
+              "type" : "object",
+              "properties" : {
+                "accessToken" : {
+                  "type" : "string",
+                  "example" : "eyJraWQiOiIxQ0JWOUtERkVBQkQ0WDhRQ0JXRDQyUlRMIiwiYWxnIjoiSFMyNTYifQ.eyJqdGkiOiI0WlIzODN2Ujk2QWtXUm9ZcnZMZHZHIiwiaWF0IjoxNDU1NzEwNjY0LCJpc3MiOiJodHRwczovL2FwaS5zdG9ybXBhdGguY29tL3YxL2FwcGxpY2F0aW9ucy83NG5MbVJlMGxBUGFsRmRiMTVhQWdsIiwic3ViIjoiaHR0cHM6Ly9hcGkuc3Rvcm1wYXRoLmNvbS92MS9hY2NvdW50cy8zTzVsbUhPRHVFYWhFZXNaaVByeVZLIiwiZXhwIjoxNDU1Nzk3MDY0fQ.Tm_JeaBOFhtZ9f4VJSdcsU3KiDDxiYPXf5oiabWwwho",
+                  "description" : "Access token to be used for authorisation"
+                },
+                "user" : {
+                  "$ref" : "#/definitions/User"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication was not successful"
+          }
+        }
+      }
+    },
+    "/user/{userId}" : {
+      "get" : {
+        "tags" : [ "User Service" ],
+        "description" : "Retrieves information for a given user ID\n",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "description" : "Uniques user id of the user to retrieve",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "X-User-Token",
+          "in" : "header",
+          "description" : "User authentication token",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful user retrieval",
+            "schema" : {
+              "$ref" : "#/definitions/User"
+            }
+          },
+          "401" : {
+            "description" : "Authentication was not successful"
+          },
+          "404" : {
+            "description" : "User was not found"
+          }
+        }
+      }
+    },
+    "/user/transactions" : {
+      "get" : {
+        "tags" : [ "User Service" ],
+        "description" : "Retrieves user balance transactions\n",
+        "parameters" : [ {
+          "name" : "X-User-Token",
+          "in" : "header",
+          "description" : "User authentication token",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful retrieval",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Transaction"
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication was not successful"
+          }
+        }
+      }
+    },
+    "/user/search" : {
+      "get" : {
+        "tags" : [ "User Service" ],
+        "description" : "Searches for users \n",
+        "parameters" : [ {
+          "name" : "query",
+          "in" : "query",
+          "description" : "Query string to search for",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "offset",
+          "in" : "query",
+          "description" : "Page offset",
+          "required" : false,
+          "type" : "integer",
+          "default" : 0
+        }, {
+          "name" : "pageSize",
+          "in" : "query",
+          "description" : "Max number of results in search",
+          "required" : false,
+          "type" : "integer",
+          "default" : 25
+        }, {
+          "name" : "X-User-Token",
+          "in" : "header",
+          "description" : "User authentication token",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful search",
+            "schema" : {
+              "type" : "object",
+              "properties" : {
+                "offset" : {
+                  "type" : "integer",
+                  "example" : 0,
+                  "description" : "Page offset of the result"
+                },
+                "pageSize" : {
+                  "type" : "integer",
+                  "example" : 25,
+                  "description" : "Max number of entries in page"
+                },
+                "users" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/definitions/User"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication was not successful"
+          }
+        }
+      }
+    },
+    "/user/resetPassword" : {
+      "post" : {
+        "tags" : [ "User Service" ],
+        "description" : "Reset password for a given username\n",
+        "parameters" : [ {
+          "name" : "username",
+          "in" : "query",
+          "description" : "Username to reset password for",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "This request is always successful"
+          }
+        }
+      }
+    },
+    "/user/changePassword" : {
+      "post" : {
+        "tags" : [ "User Service" ],
+        "description" : "Change password for a given token\n",
+        "parameters" : [ {
+          "name" : "sptoken",
+          "in" : "query",
+          "description" : "Password reset token received in email",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "password",
+          "in" : "query",
+          "description" : "New password to be set",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Password has been changed"
+          },
+          "406" : {
+            "description" : "Could not change password"
+          }
+        }
+      }
+    },
+    "/user/updatePassword" : {
+      "put" : {
+        "tags" : [ "User Service" ],
+        "description" : "Upgate password for for current user\n",
+        "parameters" : [ {
+          "name" : "X-User-Token",
+          "in" : "header",
+          "description" : "User authentication token",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "",
+          "description" : "Old and new password data",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/_3"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Password was changed"
+          }
+        }
+      }
+    },
+    "/user/verifyEmail" : {
+      "get" : {
+        "tags" : [ "User Service" ],
+        "description" : "Verifies user email token\n",
+        "parameters" : [ {
+          "name" : "sptoken",
+          "in" : "query",
+          "description" : "Email token to verify",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "201" : {
+            "description" : "Email has been verified and authenticated",
+            "schema" : {
+              "type" : "object",
+              "properties" : {
+                "accessToken" : {
+                  "type" : "string",
+                  "example" : "eyJraWQiOiIxQ0JWOUtERkVBQkQ0WDhRQ0JXRDQyUlRMIiwiYWxnIjoiSFMyNTYifQ.eyJqdGkiOiI0WlIzODN2Ujk2QWtXUm9ZcnZMZHZHIiwiaWF0IjoxNDU1NzEwNjY0LCJpc3MiOiJodHRwczovL2FwaS5zdG9ybXBhdGguY29tL3YxL2FwcGxpY2F0aW9ucy83NG5MbVJlMGxBUGFsRmRiMTVhQWdsIiwic3ViIjoiaHR0cHM6Ly9hcGkuc3Rvcm1wYXRoLmNvbS92MS9hY2NvdW50cy8zTzVsbUhPRHVFYWhFZXNaaVByeVZLIiwiZXhwIjoxNDU1Nzk3MDY0fQ.Tm_JeaBOFhtZ9f4VJSdcsU3KiDDxiYPXf5oiabWwwho",
+                  "description" : "Access token to be used for authorisation"
+                },
+                "user" : {
+                  "$ref" : "#/definitions/User"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/logout" : {
+      "post" : {
+        "tags" : [ "User Service" ],
+        "description" : "Logs out authenticated user\n",
+        "parameters" : [ {
+          "name" : "X-User-Token",
+          "in" : "header",
+          "description" : "User authentication token",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful user authentication response"
+          },
+          "401" : {
+            "description" : "Authentication was not successful"
+          }
+        }
+      }
+    },
+    "/user/identity/LOL" : {
+      "post" : {
+        "tags" : [ "User Service" ],
+        "description" : "Set LoL identity\n",
+        "parameters" : [ {
+          "name" : "X-User-Token",
+          "in" : "header",
+          "description" : "User authentication token",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "",
+          "description" : "LoL user identity to find and set",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/_4"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "LoL identity was found and set",
+            "schema" : {
+              "type" : "object",
+              "properties" : {
+                "summoner" : {
+                  "$ref" : "#/definitions/LoLSummoner"
+                },
+                "region" : {
+                  "type" : "string",
+                  "description" : "LoL region"
+                }
+              },
+              "example" : {
+                "summoner" : {
+                  "id" : 77639711,
+                  "name" : "Vodolazov",
+                  "profileIconId" : 21,
+                  "summonerLevel" : 6,
+                  "revisionDate" : 1466552218000
+                },
+                "region" : "na"
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication was not successful"
+          },
+          "404" : {
+            "description" : "LoL user was not found"
+          },
+          "405" : {
+            "description" : "User is not allowed to set LoL identity"
+          },
+          "503" : {
+            "description" : "LoL service was not available to complete operation"
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "User Service" ],
+        "description" : "Delete LoL identity\n",
+        "parameters" : [ {
+          "name" : "X-User-Token",
+          "in" : "header",
+          "description" : "User authentication token",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "LoL identity was deleted"
+          },
+          "401" : {
+            "description" : "Authentication was not successful"
+          },
+          "405" : {
+            "description" : "User is not allowed to delete LoL identity"
+          }
+        }
+      }
+    },
+    "/user/feedback" : {
+      "post" : {
+        "tags" : [ "User Service" ],
+        "description" : "Send feedback\n",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "",
+          "description" : "New user data",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/_5"
+          }
+        } ],
+        "responses" : {
+          "202" : {
+            "description" : "Feedback has been sent"
+          },
+          "401" : {
+            "description" : "Authentication was not successful"
+          }
+        }
+      }
+    },
+    "/user/friends" : {
+      "get" : {
+        "tags" : [ "Friends Service" ],
+        "description" : "Get the list of friends\n",
+        "parameters" : [ {
+          "name" : "X-User-Token",
+          "in" : "header",
+          "description" : "User authentication token",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "List of friends of current user",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/User"
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication was not successful"
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Friends Service" ],
+        "description" : "Create friend invitation\n",
+        "parameters" : [ {
+          "name" : "X-User-Token",
+          "in" : "header",
+          "description" : "User authentication token",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "",
+          "description" : "Username of user to be invited",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/_6"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Created invitation object. This object is used to accept/reject/delete invitaitons.",
+            "schema" : {
+              "$ref" : "#/definitions/Invitation"
+            }
+          },
+          "400" : {
+            "description" : "Invitation was not successful"
+          },
+          "401" : {
+            "description" : "Authentication was not successful"
+          },
+          "404" : {
+            "description" : "Invited user was not found"
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "Friends Service" ],
+        "description" : "Delete user from friends\n",
+        "parameters" : [ {
+          "name" : "X-User-Token",
+          "in" : "header",
+          "description" : "User authentication token",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "",
+          "description" : "Username of user to be invited",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/_7"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "User was deleted from friends"
+          },
+          "400" : {
+            "description" : "Deletion was not successful"
+          },
+          "401" : {
+            "description" : "Authentication was not successful"
+          },
+          "404" : {
+            "description" : "Deleted user was not found"
+          }
+        }
+      }
+    },
+    "/user/friends/invitations" : {
+      "get" : {
+        "tags" : [ "Friends Service" ],
+        "description" : "Get the list of invitations for current user\n",
+        "parameters" : [ {
+          "name" : "X-User-Token",
+          "in" : "header",
+          "description" : "User authentication token",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "List of invitations of current user",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Invitation"
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication was not successful"
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Friends Service" ],
+        "description" : "Accept friend invitation\n",
+        "parameters" : [ {
+          "name" : "X-User-Token",
+          "in" : "header",
+          "description" : "User authentication token",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "",
+          "description" : "Invitation to be accepted",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/_8"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Invitation was accepted"
+          },
+          "400" : {
+            "description" : "Invitation was not accepted"
+          },
+          "401" : {
+            "description" : "Authentication was not successful"
+          },
+          "403" : {
+            "description" : "Invitation was not allowed"
+          },
+          "404" : {
+            "description" : "Invitation was not found"
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "Friends Service" ],
+        "description" : "Reject friend invitation\n",
+        "parameters" : [ {
+          "name" : "X-User-Token",
+          "in" : "header",
+          "description" : "User authentication token",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "",
+          "description" : "Invitation to be rejected",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/_9"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Invitation was rejected"
+          },
+          "400" : {
+            "description" : "Invitation was not rejected"
+          },
+          "401" : {
+            "description" : "Authentication was not successful"
+          },
+          "403" : {
+            "description" : "Deletion was not allowed"
+          },
+          "404" : {
+            "description" : "Invitation was not found"
+          }
+        }
+      }
+    },
+    "/user/friends/pending" : {
+      "get" : {
+        "tags" : [ "Friends Service" ],
+        "description" : "Get the list of current user's invitation pending to be approved by invited users\n",
+        "parameters" : [ {
+          "name" : "X-User-Token",
+          "in" : "header",
+          "description" : "User authentication token",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "List of pending invitations of current user",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Invitation"
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication was not successful"
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "Friends Service" ],
+        "description" : "Delete pending invitaiton\n",
+        "parameters" : [ {
+          "name" : "X-User-Token",
+          "in" : "header",
+          "description" : "User authentication token",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "",
+          "description" : "Invitation to be deleted",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/_10"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Invitation was deleted"
+          },
+          "400" : {
+            "description" : "Invitation was not deleted"
+          },
+          "401" : {
+            "description" : "Authentication was not successful"
+          },
+          "403" : {
+            "description" : "Deletion was not allowed"
+          },
+          "404" : {
+            "description" : "Invitation was not found"
+          }
+        }
+      }
+    },
+    "/user/games" : {
+      "get" : {
+        "tags" : [ "Game Service" ],
+        "description" : "Get list of games created by the user\n",
+        "parameters" : [ {
+          "name" : "X-User-Token",
+          "in" : "header",
+          "description" : "User authentication token",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Game"
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication was not successful"
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Game Service" ],
+        "description" : "Create new game\n",
+        "parameters" : [ {
+          "name" : "X-User-Token",
+          "in" : "header",
+          "description" : "User authentication token",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "",
+          "description" : "Game to create",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/_11"
+          }
+        } ],
+        "responses" : {
+          "201" : {
+            "description" : "Successful response",
+            "schema" : {
+              "$ref" : "#/definitions/Game"
+            }
+          },
+          "400" : {
+            "description" : "Could not create a game due to bad data"
+          },
+          "401" : {
+            "description" : "Authentication was not successful"
+          },
+          "404" : {
+            "description" : "Not supported game type"
+          },
+          "405" : {
+            "description" : "Not allowed to create a game. Low balance or no LoL identity set"
+          }
+        }
+      }
+    },
+    "/user/games/participated" : {
+      "get" : {
+        "tags" : [ "Game Service" ],
+        "description" : "Get list of games user participated in\n",
+        "parameters" : [ {
+          "name" : "X-User-Token",
+          "in" : "header",
+          "description" : "User authentication token",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Game"
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication was not successful"
+          }
+        }
+      }
+    },
+    "/user/games/invitations" : {
+      "get" : {
+        "tags" : [ "Game Service" ],
+        "description" : "Get list of invitations recorded for user\n",
+        "parameters" : [ {
+          "name" : "X-User-Token",
+          "in" : "header",
+          "description" : "User authentication token",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/GameInvitation"
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication was not successful"
+          }
+        }
+      }
+    },
+    "/user/games/resolved" : {
+      "get" : {
+        "tags" : [ "Game Service" ],
+        "description" : "Get list of resolved games recorded by resolution service\n",
+        "parameters" : [ {
+          "name" : "X-User-Token",
+          "in" : "header",
+          "description" : "User authentication token",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "type" : "object",
+                "properties" : {
+                  "id" : {
+                    "type" : "string",
+                    "description" : "Id of the record"
+                  },
+                  "userId" : {
+                    "type" : "string",
+                    "description" : "Id of the user"
+                  },
+                  "gameId" : {
+                    "type" : "string",
+                    "description" : "Id of the game"
+                  },
+                  "date" : {
+                    "type" : "number",
+                    "description" : "Timestamp when game was resolved"
+                  },
+                  "lolGame" : {
+                    "type" : "object",
+                    "description" : "LOL recent game object",
+                    "properties" : { }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication was not successful"
+          }
+        }
+      }
+    },
+    "/user/games/{gameId}" : {
+      "get" : {
+        "tags" : [ "Game Service" ],
+        "description" : "Get the game\n",
+        "parameters" : [ {
+          "name" : "X-User-Token",
+          "in" : "header",
+          "description" : "User authentication token",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "gameId",
+          "in" : "path",
+          "description" : "Unique id of the game",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "$ref" : "#/definitions/Game"
+            }
+          },
+          "401" : {
+            "description" : "Authentication was not successful"
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "Game Service" ],
+        "description" : "Delete the game\n",
+        "parameters" : [ {
+          "name" : "X-User-Token",
+          "in" : "header",
+          "description" : "User authentication token",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "gameId",
+          "in" : "path",
+          "description" : "Unique id of the game",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response"
+          },
+          "400" : {
+            "description" : "Cannot delete due to wrong data provided"
+          },
+          "401" : {
+            "description" : "Authentication was not successful"
+          },
+          "403" : {
+            "description" : "Deletion not allowed"
+          },
+          "404" : {
+            "description" : "Game not found"
+          },
+          "423" : {
+            "description" : "Deletion locked"
+          }
+        }
+      }
+    },
+    "/user/games/{gameId}/start" : {
+      "post" : {
+        "tags" : [ "Game Service" ],
+        "description" : "Start the game, only game owner can start the game\n",
+        "parameters" : [ {
+          "name" : "X-User-Token",
+          "in" : "header",
+          "description" : "User authentication token",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "gameId",
+          "in" : "path",
+          "description" : "Unique id of the game",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response"
+          },
+          "400" : {
+            "description" : "Cannot join due to wrong data provided"
+          },
+          "401" : {
+            "description" : "Authentication was not successful"
+          },
+          "423" : {
+            "description" : "Game cannot be started, inappropriate status"
+          }
+        }
+      }
+    },
+    "/user/games/{gameId}/cancel" : {
+      "post" : {
+        "tags" : [ "Game Service" ],
+        "description" : "Initiate cancel game voting, only game player can participate\n",
+        "parameters" : [ {
+          "name" : "X-User-Token",
+          "in" : "header",
+          "description" : "User authentication token",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "gameId",
+          "in" : "path",
+          "description" : "Unique id of the game",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "vote",
+          "in" : "query",
+          "description" : "true is for cancelling the game, false is against cancelling",
+          "required" : true,
+          "type" : "boolean"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Vote acceted, game deleted"
+          },
+          "202" : {
+            "description" : "Vote accepted, game not deleted"
+          },
+          "401" : {
+            "description" : "Authentication was not successful"
+          },
+          "403" : {
+            "description" : "Cannot be canceled, not a member"
+          },
+          "410" : {
+            "description" : "Vote against accepted, voting failed and reset"
+          },
+          "423" : {
+            "description" : "Game cannot be canceled, wrong status"
+          }
+        }
+      }
+    },
+    "/user/games/{gameId}/invite" : {
+      "post" : {
+        "tags" : [ "Game Service" ],
+        "description" : "Invite users to the game\n",
+        "parameters" : [ {
+          "name" : "X-User-Token",
+          "in" : "header",
+          "description" : "User authentication token",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "gameId",
+          "in" : "path",
+          "description" : "Unique id of the game",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "userIds",
+          "in" : "query",
+          "description" : "List of user Ids to send notification to",
+          "required" : true,
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "csv"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response"
+          },
+          "400" : {
+            "description" : "Cannot join due to wrong data provided"
+          },
+          "401" : {
+            "description" : "Authentication was not successful"
+          },
+          "404" : {
+            "description" : "Game not found"
+          }
+        }
+      }
+    },
+    "/user/games/{gameId}/join" : {
+      "post" : {
+        "tags" : [ "Game Service" ],
+        "description" : "Join game lobby\n",
+        "parameters" : [ {
+          "name" : "X-User-Token",
+          "in" : "header",
+          "description" : "User authentication token",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "gameId",
+          "in" : "path",
+          "description" : "Unique id of the game",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "$ref" : "#/definitions/Game"
+            }
+          },
+          "400" : {
+            "description" : "Cannot join due to wrong data provided"
+          },
+          "401" : {
+            "description" : "Authentication was not successful"
+          },
+          "403" : {
+            "description" : "Join not allowed."
+          },
+          "404" : {
+            "description" : "Game not found"
+          }
+        }
+      }
+    },
+    "/user/games/{gameId}/reject" : {
+      "post" : {
+        "tags" : [ "Game Service" ],
+        "description" : "Reject invitation to a game\n",
+        "parameters" : [ {
+          "name" : "X-User-Token",
+          "in" : "header",
+          "description" : "User authentication token",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "gameId",
+          "in" : "path",
+          "description" : "Unique id of the game",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response"
+          },
+          "401" : {
+            "description" : "Authentication was not successful"
+          },
+          "404" : {
+            "description" : "Game not found"
+          }
+        }
+      }
+    },
+    "/user/games/{gameId}/team" : {
+      "post" : {
+        "tags" : [ "Game Service" ],
+        "description" : "Join team of the game. The user must be in a lobby already. Can be used to change team or go back to lobby.\n",
+        "parameters" : [ {
+          "name" : "X-User-Token",
+          "in" : "header",
+          "description" : "User authentication token",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "gameId",
+          "in" : "path",
+          "description" : "Unique id of the game",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "teamId",
+          "in" : "query",
+          "description" : "ID of the team to join",
+          "required" : true,
+          "type" : "string",
+          "enum" : [ "LOBBY", "TEAM_A", "TEAM_B" ]
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "$ref" : "#/definitions/Game"
+            }
+          },
+          "400" : {
+            "description" : "Cannot join due to wrong data provided"
+          },
+          "401" : {
+            "description" : "Authentication was not successful"
+          },
+          "403" : {
+            "description" : "Join not allowed."
+          },
+          "404" : {
+            "description" : "Game not found"
+          }
+        }
+      }
+    },
+    "/user/games/{gameId}/leave" : {
+      "post" : {
+        "tags" : [ "Game Service" ],
+        "description" : "Leave game lobby. Creator cannot leave the game\n",
+        "parameters" : [ {
+          "name" : "X-User-Token",
+          "in" : "header",
+          "description" : "User authentication token",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "gameId",
+          "in" : "path",
+          "description" : "Unique id of the game",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "$ref" : "#/definitions/Game"
+            }
+          },
+          "400" : {
+            "description" : "Cannot leave due to wrong data provided"
+          },
+          "401" : {
+            "description" : "Authentication was not successful"
+          },
+          "403" : {
+            "description" : "Leave not allowed."
+          }
+        }
+      }
+    },
+    "/user/games/{gameId}/kick" : {
+      "delete" : {
+        "tags" : [ "Game Service" ],
+        "description" : "Kick player from game lobby. Only creator can kick. Kicked user will get notification.\n",
+        "parameters" : [ {
+          "name" : "X-User-Token",
+          "in" : "header",
+          "description" : "User authentication token",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "gameId",
+          "in" : "path",
+          "description" : "Unique id of the game",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "playerId",
+          "in" : "query",
+          "description" : "Id of player to be kicked",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "$ref" : "#/definitions/Game"
+            }
+          },
+          "401" : {
+            "description" : "Authentication was not successful"
+          },
+          "403" : {
+            "description" : "Kick not allowed."
+          },
+          "404" : {
+            "description" : "Kicked player not found."
+          },
+          "423" : {
+            "description" : "Game locked."
+          }
+        }
+      }
+    },
+    "/user/games/{gameId}/resolve" : {
+      "post" : {
+        "tags" : [ "Game Service" ],
+        "description" : "Ask for game resolution. User must be a game participant. Game participants must have LoL identities setup. Game must be started BEFORE LoL game is finished. Game status, user results and wins and losses will be updated accordingly.\n",
+        "parameters" : [ {
+          "name" : "X-User-Token",
+          "in" : "header",
+          "description" : "User authentication token",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "gameId",
+          "in" : "path",
+          "description" : "Unique id of the game",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "102" : {
+            "description" : "Game is being resolved right now"
+          },
+          "200" : {
+            "description" : "Game has been resolved",
+            "schema" : {
+              "$ref" : "#/definitions/Game"
+            }
+          },
+          "400" : {
+            "description" : "Cannot due to wrong data provided"
+          },
+          "401" : {
+            "description" : "Authentication was not successful"
+          },
+          "403" : {
+            "description" : "Action not allowed"
+          },
+          "404" : {
+            "description" : "LoL game was not found"
+          },
+          "409" : {
+            "description" : "Conflicting results or user identities were discovered"
+          },
+          "503" : {
+            "description" : "LoL API was not available"
+          }
+        }
+      }
+    },
+    "/user/games/{gameId}/chat" : {
+      "get" : {
+        "tags" : [ "Game Service" ],
+        "description" : "Get chat messages recorded for game\n",
+        "parameters" : [ {
+          "name" : "X-User-Token",
+          "in" : "header",
+          "description" : "User authentication token",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "gameId",
+          "in" : "path",
+          "description" : "Unique id of the game",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "List of chat messages",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/ChatMessage"
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication was not successful"
+          },
+          "403" : {
+            "description" : "User does not belong to that game"
+          }
+        }
+      }
+    },
+    "/user/topic/friends/status" : {
+      "post" : {
+        "tags" : [ "Subscription" ],
+        "description" : "Subscribe to receive friend status changes\n",
+        "parameters" : [ ],
+        "responses" : {
+          "default" : {
+            "description" : "Received message",
+            "schema" : {
+              "$ref" : "#/definitions/User"
+            }
+          }
+        }
+      }
+    },
+    "/user/topic/friends/invitation" : {
+      "post" : {
+        "tags" : [ "Subscription" ],
+        "description" : "Subscribe to receive friend invitations\n",
+        "parameters" : [ ],
+        "responses" : {
+          "default" : {
+            "description" : "Received message",
+            "schema" : {
+              "$ref" : "#/definitions/Invitation"
+            }
+          }
+        }
+      }
+    },
+    "/user/topic/friends/accepted" : {
+      "post" : {
+        "tags" : [ "Subscription" ],
+        "description" : "Subscribe to receive accepted friend invitations\n",
+        "parameters" : [ ],
+        "responses" : {
+          "default" : {
+            "description" : "Received message",
+            "schema" : {
+              "$ref" : "#/definitions/Invitation"
+            }
+          }
+        }
+      }
+    },
+    "/user/topic/games/invitation" : {
+      "post" : {
+        "tags" : [ "Subscription" ],
+        "description" : "Subscribe to receive game invitations invitations\n",
+        "parameters" : [ ],
+        "responses" : {
+          "default" : {
+            "description" : "Received message",
+            "schema" : {
+              "$ref" : "#/definitions/Game"
+            }
+          }
+        }
+      }
+    },
+    "/user/topic/games/status" : {
+      "post" : {
+        "tags" : [ "Subscription" ],
+        "description" : "Subscribe to receive game status changes\n",
+        "parameters" : [ ],
+        "responses" : {
+          "default" : {
+            "description" : "Received message",
+            "schema" : {
+              "$ref" : "#/definitions/Game"
+            }
+          }
+        }
+      }
+    },
+    "/user/topic/games/deleted" : {
+      "post" : {
+        "tags" : [ "Subscription" ],
+        "description" : "Subscribe to receive game deletions\n",
+        "parameters" : [ ],
+        "responses" : {
+          "default" : {
+            "description" : "Received message",
+            "schema" : {
+              "$ref" : "#/definitions/Game"
+            }
+          }
+        }
+      }
+    },
+    "/user/topic/games/cancel" : {
+      "post" : {
+        "tags" : [ "Subscription" ],
+        "description" : "Subscribe to receive game cancel votes\n",
+        "parameters" : [ ],
+        "responses" : {
+          "default" : {
+            "description" : "Received message",
+            "schema" : {
+              "$ref" : "#/definitions/Game"
+            }
+          }
+        }
+      }
+    },
+    "/user/topic/games/voteFailed" : {
+      "post" : {
+        "tags" : [ "Subscription" ],
+        "description" : "Subscribe to receive game cancel vote failed\n",
+        "parameters" : [ ],
+        "responses" : {
+          "default" : {
+            "description" : "Received message",
+            "schema" : {
+              "$ref" : "#/definitions/Game"
+            }
+          }
+        }
+      }
+    },
+    "/user/topic/games/chat" : {
+      "post" : {
+        "tags" : [ "Subscription" ],
+        "description" : "Subscribe to receive game chat messages. Send messages to /app/games/{gameId}/chat\n",
+        "parameters" : [ ],
+        "responses" : {
+          "default" : {
+            "description" : "Received message",
+            "schema" : {
+              "$ref" : "#/definitions/ChatMessage"
+            }
+          }
+        }
+      }
+    },
+    "/user/topic/user/balance" : {
+      "post" : {
+        "tags" : [ "Subscription" ],
+        "description" : "Subscribe to receive changes in user balance\n",
+        "parameters" : [ ],
+        "responses" : {
+          "default" : {
+            "description" : "Received message",
+            "schema" : {
+              "type" : "object",
+              "properties" : {
+                "available" : {
+                  "type" : "number",
+                  "description" : "Amount currently available for use"
+                },
+                "locked" : {
+                  "type" : "number",
+                  "description" : "Amount currently locked"
+                },
+                "total" : {
+                  "type" : "number",
+                  "description" : "Total amount"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/platforms" : {
+      "get" : {
+        "tags" : [ "Global Service" ],
+        "description" : "Retrieve list of supported platforms\n",
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Platform"
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication was not successful"
+          }
+        }
+      }
+    },
+    "/admin/user/{userId}" : {
+      "delete" : {
+        "tags" : [ "Admin Service" ],
+        "description" : "Delete given user ID\n",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "description" : "Uniques user id of the user to retrieve",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "X-User-Token",
+          "in" : "header",
+          "description" : "User authentication token",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "User was deleted"
+          },
+          "401" : {
+            "description" : "Authentication was not successful"
+          },
+          "404" : {
+            "description" : "User was not found"
+          }
+        }
+      }
+    },
+    "/user/withdraw/yandex" : {
+      "get" : {
+        "tags" : [ "Payment Service" ],
+        "description" : "Withdraw funds to yandex account\n",
+        "parameters" : [ {
+          "name" : "account",
+          "in" : "query",
+          "description" : "Yandex Money account number",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "amount",
+          "in" : "query",
+          "description" : "amount to withdraw",
+          "required" : true,
+          "type" : "number"
+        }, {
+          "name" : "X-User-Token",
+          "in" : "header",
+          "description" : "User authentication token",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful user authentication response",
+            "schema" : {
+              "type" : "object",
+              "properties" : {
+                "balance" : {
+                  "$ref" : "#/definitions/inline_response_200_4_balance"
+                },
+                "info" : {
+                  "$ref" : "#/definitions/inline_response_200_4_info"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication was not successful"
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "Transaction" : {
+      "type" : "object",
+      "properties" : {
+        "available" : {
+          "type" : "number",
+          "description" : "Recorded change in 'available' account"
+        },
+        "locked" : {
+          "type" : "number",
+          "description" : "Recorded change in 'locked' account"
+        },
+        "type" : {
+          "type" : "string",
+          "description" : "Game outcome for the player",
+          "enum" : [ "WIN", "LOSS", "TOP_UP", "WITHDRAW", "LOCK", "UNLOCK", "DIRECT_SET" ]
+        },
+        "date" : {
+          "type" : "number",
+          "description" : "Timestamp of balance transaction"
+        },
+        "message" : {
+          "type" : "string",
+          "description" : "Message clarifying transaction circumstances"
+        },
+        "referenceId" : {
+          "type" : "string",
+          "description" : "Reference to supporting data. E.g. supporting game id"
+        }
+      },
+      "example" : {
+        "available" : 5,
+        "locked" : -5,
+        "type" : "UNLOCK",
+        "date" : 1475856312909,
+        "message" : "DELETE_GAME",
+        "referenceId" : "57f7c79ee4b0e6fe8092357e"
+      }
+    },
+    "User" : {
+      "type" : "object",
+      "properties" : {
+        "username" : {
+          "type" : "string",
+          "description" : "Username to of the user"
+        },
+        "id" : {
+          "type" : "string",
+          "description" : "Unique user id"
+        },
+        "enabled" : {
+          "type" : "boolean",
+          "description" : "Indicates whenther user is enabled or disabled"
+        },
+        "online" : {
+          "type" : "boolean",
+          "description" : "Indicates whenther user is online (has active WebSocket sessions)"
+        },
+        "firstName" : {
+          "type" : "string",
+          "description" : "First name of the user."
+        },
+        "lastName" : {
+          "type" : "string",
+          "description" : "Last name of the user."
+        },
+        "email" : {
+          "type" : "string",
+          "description" : "Email address of the user"
+        },
+        "identities" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/LoLPlatformIdentity"
+          }
+        },
+        "balance" : {
+          "$ref" : "#/definitions/inline_response_default"
+        }
+      },
+      "example" : {
+        "username" : "test_user",
+        "enabled" : true,
+        "online" : true,
+        "id" : "3O5lmHODuEahEesZiPryVK",
+        "firstName" : "Test",
+        "lastName" : "User",
+        "email" : "test_user@myawesomeserver.com",
+        "identities" : [ ],
+        "balance" : {
+          "available" : 100,
+          "locked" : 15
+        }
+      }
+    },
+    "Invitation" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string",
+          "example" : "56bc7972a8269d461135fb02",
+          "description" : "Unique invitation id."
+        },
+        "userId" : {
+          "type" : "string",
+          "example" : "3O5lmHODuEahEesZiPryVK",
+          "description" : "Unique id of inviting user."
+        },
+        "userData" : {
+          "$ref" : "#/definitions/User"
+        },
+        "friendId" : {
+          "type" : "string",
+          "example" : "65sdmHODuEahEesZiPijTr",
+          "description" : "Unique id of invited user."
+        },
+        "friendData" : {
+          "$ref" : "#/definitions/User"
+        }
+      }
+    },
+    "Platform" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string",
+          "description" : "Unique ID of the platform"
+        },
+        "name" : {
+          "type" : "string",
+          "description" : "Name of the platform"
+        },
+        "regions" : {
+          "type" : "array",
+          "description" : "Supported platform regions",
+          "items" : {
+            "type" : "string"
+          }
+        }
+      },
+      "example" : {
+        "id" : "LOL",
+        "name" : "League of Legends",
+        "regions" : [ "ru", "na" ]
+      }
+    },
+    "LoLSummoner" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "number",
+          "description" : "LoL summoner ID"
+        },
+        "name" : {
+          "type" : "string",
+          "description" : "LoL summoner name"
+        },
+        "profileIconId" : {
+          "type" : "number",
+          "description" : "LoL summoner icon ID"
+        },
+        "summonerLevel" : {
+          "type" : "number",
+          "description" : "LoL summoner level"
+        },
+        "revisionDate" : {
+          "type" : "number",
+          "description" : "Revision date timestamp"
+        }
+      },
+      "description" : "LoL summoner",
+      "example" : {
+        "id" : 77639711,
+        "name" : "Vodolazov",
+        "profileIconId" : 21,
+        "summonerLevel" : 6,
+        "revisionDate" : 1466552218000
+      }
+    },
+    "LoLPlatformIdentity" : {
+      "type" : "object",
+      "properties" : {
+        "platform" : {
+          "$ref" : "#/definitions/Platform"
+        },
+        "confirmed" : {
+          "type" : "boolean",
+          "description" : "Indicates if platform identity was confirmed"
+        },
+        "region" : {
+          "type" : "string",
+          "description" : "LoL suumoner region"
+        },
+        "summoner" : {
+          "$ref" : "#/definitions/LoLSummoner"
+        }
+      }
+    },
+    "Player" : {
+      "type" : "object",
+      "properties" : {
+        "playerId" : {
+          "type" : "string",
+          "description" : "User id of the player"
+        },
+        "teamId" : {
+          "type" : "string",
+          "description" : "Id of the team player assigned to. LOBBY if in the lobby."
+        },
+        "result" : {
+          "type" : "string",
+          "description" : "Game outcome for the player",
+          "enum" : [ "NOT_DEFINED", "WIN", "LOSE" ]
+        },
+        "ready" : {
+          "type" : "boolean",
+          "description" : "Indicated if player is ready to play"
+        },
+        "userData" : {
+          "$ref" : "#/definitions/User"
+        }
+      },
+      "example" : {
+        "playerId" : "3O5lmHODuEahEesZiPryVK",
+        "teamId" : "LOBBY",
+        "result" : "NOT_DEFINED",
+        "ready" : false
+      }
+    },
+    "ChatMessage" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string",
+          "description" : "Unique id of the message"
+        },
+        "message" : {
+          "type" : "string",
+          "description" : "Chat message content"
+        },
+        "gameId" : {
+          "type" : "string",
+          "description" : "id of related game"
+        },
+        "userId" : {
+          "type" : "string",
+          "description" : "id of sender"
+        },
+        "user" : {
+          "$ref" : "#/definitions/User"
+        },
+        "date" : {
+          "type" : "number",
+          "description" : "timestamp"
+        }
+      }
+    },
+    "GameInvitation" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string",
+          "description" : "Unique id of the invitation"
+        },
+        "gameId" : {
+          "type" : "string",
+          "description" : "Unique id of the game"
+        },
+        "invitingId" : {
+          "type" : "string",
+          "description" : "Id of user created the invitation"
+        },
+        "invitingUser" : {
+          "$ref" : "#/definitions/User"
+        },
+        "invitedId" : {
+          "type" : "string",
+          "description" : "Id of user invited"
+        },
+        "invitedUser" : {
+          "$ref" : "#/definitions/User"
+        },
+        "date" : {
+          "type" : "number",
+          "description" : "Timestamp"
+        },
+        "game" : {
+          "$ref" : "#/definitions/Game"
+        },
+        "state" : {
+          "type" : "string",
+          "description" : "State of the invitation describing the context when the invitation is received via subscription. CREATED = just created to invite a user (you); ACCEPTED = user accepted the (your) invitation and joined the game; REJECTED = user declined the (your) invitation.",
+          "enum" : [ "CREATED", "ACCEPTED", "REJECTED" ]
+        }
+      }
+    },
+    "GameCancelVote" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string",
+          "description" : "Unique id of the vote"
+        },
+        "gameId" : {
+          "type" : "string",
+          "description" : "Unique id of the game"
+        },
+        "playerId" : {
+          "type" : "string",
+          "description" : "Id of user created the vote"
+        },
+        "vote" : {
+          "type" : "boolean",
+          "description" : "True if user wants to cancel this game"
+        },
+        "date" : {
+          "type" : "number",
+          "description" : "Timestamp"
+        }
+      },
+      "example" : {
+        "id" : "dfdfasdfga34523ff2d",
+        "gameId" : "56d050544b2803217fa1a970",
+        "playerId" : "3O5lmHODuEahEesZiPryVK",
+        "vote" : true,
+        "date" : 1466352218000
+      }
+    },
+    "Game" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string",
+          "description" : "Unique game id"
+        },
+        "canJoin" : {
+          "type" : "boolean",
+          "description" : "Indicates if players can join the game"
+        },
+        "canStart" : {
+          "type" : "boolean",
+          "description" : "Indicates if owner can start the game"
+        },
+        "state" : {
+          "type" : "string",
+          "description" : "Current game state",
+          "enum" : [ "CREATED", "WAITING_RESOLUTION", "RESOLVING", "CONFLICT", "RESOLVED", "COMPLETED" ]
+        },
+        "type" : {
+          "type" : "string",
+          "description" : "Type of the game",
+          "enum" : [ "TWO_PLAYER_GAME", "GAME_3V3", "MOST_KILLS" ]
+        },
+        "creatorId" : {
+          "type" : "string",
+          "description" : "Id of user who created the game"
+        },
+        "created_date" : {
+          "type" : "number",
+          "description" : "Timestamp when the game was created"
+        },
+        "started_date" : {
+          "type" : "number",
+          "description" : "Timestamp when the game was started"
+        },
+        "completed_date" : {
+          "type" : "number",
+          "description" : "Timestamp when the game was completed"
+        },
+        "price" : {
+          "type" : "number",
+          "description" : "Price to enter the game"
+        },
+        "allPlayersReady" : {
+          "type" : "boolean",
+          "description" : "Indicates if all players are ready to play"
+        },
+        "players" : {
+          "type" : "array",
+          "description" : "Players of the game",
+          "items" : {
+            "$ref" : "#/definitions/Player"
+          }
+        },
+        "cancelVotes" : {
+          "type" : "array",
+          "description" : "Votes to cancel this game",
+          "items" : {
+            "$ref" : "#/definitions/GameCancelVote"
+          }
+        }
+      },
+      "example" : {
+        "id" : "56d050544b2803217fa1a970",
+        "state" : "CREATED",
+        "type" : "TWO_PLAYER_GAME",
+        "creator" : "3O5lmHODuEahEesZiPryVK",
+        "created_date" : 1456493756591,
+        "started_date" : 1456493757234,
+        "completed_date" : 0,
+        "price" : 5,
+        "allPlayersReady" : false,
+        "players" : [ ],
+        "cancelVotes" : [ ]
+      }
+    },
+    "" : {
+      "type" : "object",
+      "properties" : {
+        "login" : {
+          "type" : "string",
+          "description" : "Username of the user to create"
+        },
+        "password" : {
+          "type" : "string",
+          "description" : "Password of the user to create"
+        },
+        "firstName" : {
+          "type" : "string",
+          "description" : "First name of the user to create"
+        },
+        "lastName" : {
+          "type" : "string",
+          "description" : "Last name of the user to create"
+        }
+      },
+      "example" : {
+        "login" : "ivan.ololo@mailserver.com",
+        "password" : "0meg@Project",
+        "firstName" : "Ivan",
+        "lastName" : "Ololo"
+      }
+    },
+    "_1" : {
+      "type" : "object",
+      "properties" : {
+        "firstName" : {
+          "type" : "string",
+          "description" : "First name of the user to create"
+        },
+        "lastName" : {
+          "type" : "string",
+          "description" : "Last name of the user to create"
+        }
+      },
+      "example" : {
+        "firstName" : "Ivan",
+        "lastName" : "Ololo"
+      }
+    },
+    "_2" : {
+      "type" : "object",
+      "properties" : {
+        "login" : {
+          "type" : "string",
+          "description" : "Username of the user to authorise"
+        },
+        "password" : {
+          "type" : "string",
+          "description" : "Password of the user to authorise"
+        }
+      },
+      "example" : {
+        "login" : "test_user",
+        "password" : "0meg@Project"
+      }
+    },
+    "inline_response_200" : {
+      "properties" : {
+        "accessToken" : {
+          "type" : "string",
+          "example" : "eyJraWQiOiIxQ0JWOUtERkVBQkQ0WDhRQ0JXRDQyUlRMIiwiYWxnIjoiSFMyNTYifQ.eyJqdGkiOiI0WlIzODN2Ujk2QWtXUm9ZcnZMZHZHIiwiaWF0IjoxNDU1NzEwNjY0LCJpc3MiOiJodHRwczovL2FwaS5zdG9ybXBhdGguY29tL3YxL2FwcGxpY2F0aW9ucy83NG5MbVJlMGxBUGFsRmRiMTVhQWdsIiwic3ViIjoiaHR0cHM6Ly9hcGkuc3Rvcm1wYXRoLmNvbS92MS9hY2NvdW50cy8zTzVsbUhPRHVFYWhFZXNaaVByeVZLIiwiZXhwIjoxNDU1Nzk3MDY0fQ.Tm_JeaBOFhtZ9f4VJSdcsU3KiDDxiYPXf5oiabWwwho",
+          "description" : "Access token to be used for authorisation"
+        },
+        "user" : {
+          "$ref" : "#/definitions/User"
+        }
+      }
+    },
+    "inline_response_200_1" : {
+      "properties" : {
+        "offset" : {
+          "type" : "integer",
+          "example" : 0,
+          "description" : "Page offset of the result"
+        },
+        "pageSize" : {
+          "type" : "integer",
+          "example" : 25,
+          "description" : "Max number of entries in page"
+        },
+        "users" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/User"
+          }
+        }
+      }
+    },
+    "_3" : {
+      "type" : "object",
+      "properties" : {
+        "oldPassword" : {
+          "type" : "string",
+          "description" : "Old password for current user"
+        },
+        "newPassword" : {
+          "type" : "string",
+          "description" : "New Password for current user"
+        }
+      },
+      "example" : {
+        "oldPassword" : "asjdkh%^%&*JHG",
+        "newPassword" : "asjhgdjh$$%^@vDGG"
+      }
+    },
+    "_4" : {
+      "type" : "object",
+      "properties" : {
+        "username" : {
+          "type" : "string",
+          "description" : "LoL username to look for"
+        },
+        "region" : {
+          "type" : "string",
+          "description" : "LoL region to look user at"
+        }
+      },
+      "example" : {
+        "username" : "vodolazov",
+        "region" : "na"
+      }
+    },
+    "inline_response_200_2" : {
+      "properties" : {
+        "summoner" : {
+          "$ref" : "#/definitions/LoLSummoner"
+        },
+        "region" : {
+          "type" : "string",
+          "description" : "LoL region"
+        }
+      },
+      "example" : "{summoner={id=77639711, name=Vodolazov, profileIconId=21, summonerLevel=6, revisionDate=1466552218000}, region=na}"
+    },
+    "_5" : {
+      "type" : "object",
+      "properties" : {
+        "subject" : {
+          "type" : "string",
+          "description" : "Subject of the feedback"
+        },
+        "message" : {
+          "type" : "string",
+          "description" : "Message of the feedback"
+        }
+      },
+      "example" : {
+        "subject" : "WTF?!!!!",
+        "message" : "доколѣ Вѣнчаніе Русскаго Царя на царство будетъ сохранять въ православномъ мірѣ не только государственное, но и церковное значеніе"
+      }
+    },
+    "_6" : {
+      "type" : "object",
+      "properties" : {
+        "friendId" : {
+          "type" : "string",
+          "description" : "Unique ID of the user to be invited"
+        }
+      },
+      "example" : {
+        "friendId" : "3O5lmHODuEahEesZiPryVK"
+      }
+    },
+    "_7" : {
+      "type" : "object",
+      "properties" : {
+        "friendId" : {
+          "type" : "string",
+          "description" : "Unique ID of the user to be deleted"
+        }
+      },
+      "example" : {
+        "friendId" : "3O5lmHODuEahEesZiPryVK"
+      }
+    },
+    "_8" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string",
+          "description" : "Unique ID of invitation to be accepted"
+        }
+      },
+      "example" : {
+        "id" : "57547461a826f16679e6d9fb"
+      }
+    },
+    "_9" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string",
+          "description" : "Unique ID of invitation to be deleted"
+        }
+      },
+      "example" : {
+        "id" : "57547461a826f16679e6d9fb"
+      }
+    },
+    "_10" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string",
+          "description" : "Unique ID of invitation to be deleted"
+        }
+      },
+      "example" : {
+        "id" : "57547461a826f16679e6d9fb"
+      }
+    },
+    "_11" : {
+      "type" : "object",
+      "properties" : {
+        "type" : {
+          "type" : "string",
+          "description" : "Type of the game",
+          "enum" : [ "TWO_PLAYER_GAME" ]
+        },
+        "price" : {
+          "type" : "number",
+          "description" : "Price of the game"
+        }
+      },
+      "example" : {
+        "type" : "TWO_PLAYER_GAME",
+        "price" : 5
+      }
+    },
+    "inline_response_200_3" : {
+      "properties" : {
+        "id" : {
+          "type" : "string",
+          "description" : "Id of the record"
+        },
+        "userId" : {
+          "type" : "string",
+          "description" : "Id of the user"
+        },
+        "gameId" : {
+          "type" : "string",
+          "description" : "Id of the game"
+        },
+        "date" : {
+          "type" : "number",
+          "description" : "Timestamp when game was resolved"
+        },
+        "lolGame" : {
+          "type" : "object",
+          "description" : "LOL recent game object",
+          "properties" : { }
+        }
+      }
+    },
+    "inline_response_default" : {
+      "properties" : {
+        "available" : {
+          "type" : "number",
+          "description" : "Amount currently available for use"
+        },
+        "locked" : {
+          "type" : "number",
+          "description" : "Amount currently locked"
+        },
+        "total" : {
+          "type" : "number",
+          "description" : "Total amount"
+        }
+      }
+    },
+    "inline_response_200_4_balance" : {
+      "properties" : {
+        "available" : {
+          "type" : "number",
+          "example" : 100.0,
+          "description" : "Amount currently available for use"
+        },
+        "locked" : {
+          "type" : "number",
+          "example" : 0.0,
+          "description" : "Amount currently locked"
+        },
+        "total" : {
+          "type" : "number",
+          "example" : 100.0,
+          "description" : "Total amount"
+        }
+      },
+      "description" : "Balance of the user after withdrawal"
+    },
+    "inline_response_200_4_info" : {
+      "properties" : {
+        "category" : {
+          "type" : "string",
+          "example" : "WITHDRAWAL",
+          "description" : "Type of the transaction"
+        },
+        "sourceCurrencyCode" : {
+          "type" : "string",
+          "example" : "RUB",
+          "description" : "Currency code of the source account"
+        },
+        "sourceAmount" : {
+          "type" : "number",
+          "example" : -10.0,
+          "description" : "Amount withdrawn from source"
+        },
+        "targetAmount" : {
+          "type" : "number",
+          "example" : 9.85,
+          "description" : "Amount deposited to destination"
+        },
+        "sourceAmountFee" : {
+          "type" : "number",
+          "example" : 0.0,
+          "description" : "Fee"
+        },
+        "sourceAmountCompensation" : {
+          "type" : "number",
+          "example" : 0.15,
+          "description" : "Compensation"
+        },
+        "targetCurrencyCode" : {
+          "type" : "string",
+          "example" : "RUR",
+          "description" : "Target currency code"
+        },
+        "statusId" : {
+          "type" : "string",
+          "example" : "SUCCEED",
+          "description" : "Status of the transaction"
+        },
+        "sourceAmountTotal" : {
+          "type" : "number",
+          "example" : -10.0,
+          "description" : "Total amount withdrawn from source"
+        },
+        "modified" : {
+          "type" : "string",
+          "example" : "2017-03-19T20:41:09.000+03:00",
+          "description" : "Transaction timestamp"
+        }
+      },
+      "description" : "Information about transaction"
+    },
+    "inline_response_200_4" : {
+      "properties" : {
+        "balance" : {
+          "$ref" : "#/definitions/inline_response_200_4_balance"
+        },
+        "info" : {
+          "$ref" : "#/definitions/inline_response_200_4_info"
+        }
+      }
+    }
+  }
+}
