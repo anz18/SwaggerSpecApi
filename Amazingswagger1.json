@@ -1,0 +1,13 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "WinSMS REST API",
+    "version" : "1.0.0",
+    "title" : "winsms"
+  },
+  "host" : "virtserver.swaggerhub.com",
+  "basePath" : "/inkeytech/winsms/1.0.0",
+  "schemes" : [ "https" ],
+  "paths" : { },
+  "definitions" : { }
+}
