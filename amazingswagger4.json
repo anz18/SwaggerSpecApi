@@ -1,0 +1,2224 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "version" : "0.0.1",
+    "title" : "Permission API"
+  },
+  "host" : "localhost",
+  "basePath" : "/",
+  "schemes" : [ "http" ],
+  "consumes" : [ "application/json" ],
+  "produces" : [ "application/json" ],
+  "paths" : {
+    "/group/{group_id}/type" : {
+      "get" : {
+        "tags" : [ "Groups" ],
+        "summary" : "Get all group types",
+        "description" : "Get all group types",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "group_id",
+          "in" : "path",
+          "description" : "The group id",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "size",
+          "in" : "query",
+          "description" : "the size of the collection to return by default will return 25 items in the collection, max 1000",
+          "required" : false,
+          "type" : "integer"
+        }, {
+          "name" : "offset",
+          "in" : "query",
+          "description" : "the offset of the collection to return",
+          "required" : false,
+          "type" : "integer"
+        }, {
+          "name" : "type",
+          "in" : "query",
+          "description" : "the filter by type",
+          "required" : false,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the types attached to the group",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/group_type"
+              }
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      }
+    },
+    "/group/{group_id}/type/{type_id}" : {
+      "get" : {
+        "tags" : [ "Groups" ],
+        "summary" : "Get group type by group id and type id",
+        "description" : "Get group type by group id and type id",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "type_id",
+          "in" : "path",
+          "description" : "The type id",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "group_id",
+          "in" : "path",
+          "description" : "The group id",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the type specified by the group id and type id",
+            "schema" : {
+              "$ref" : "#/definitions/group_type"
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "404" : {
+            "description" : "Not found",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Groups" ],
+        "summary" : "Attach a type to the group\n",
+        "description" : "Create a new type\n",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "type_id",
+          "in" : "path",
+          "description" : "The type id",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "group_id",
+          "in" : "path",
+          "description" : "The group id",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the created group type",
+            "schema" : {
+              "$ref" : "#/definitions/group_type"
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "examples" : {
+              "application/json" : "{\n  code: 400,\n  message: 'Typ id not provided',\n  reference: '2af1f872-7ce7-11e5-9c38-80fa5b131b9d'\n}\n"
+            },
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "Groups" ],
+        "summary" : "Detatch the type from the group",
+        "description" : "Detatch the type from the group",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "type_id",
+          "in" : "path",
+          "description" : "The type id",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "group_id",
+          "in" : "path",
+          "description" : "The group id",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns OK if ok",
+            "schema" : {
+              "$ref" : "#/definitions/status"
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "404" : {
+            "description" : "Not found",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      }
+    },
+    "/permission/{permission_id}/type" : {
+      "get" : {
+        "tags" : [ "Permissions" ],
+        "summary" : "Get all permission types",
+        "description" : "Get all types",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "permission_id",
+          "in" : "path",
+          "description" : "The permission id",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "size",
+          "in" : "query",
+          "description" : "the size of the collection to return by default will return 25 items in the collection, max 1000",
+          "required" : false,
+          "type" : "integer"
+        }, {
+          "name" : "offset",
+          "in" : "query",
+          "description" : "the offset of the collection to return",
+          "required" : false,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the types attached to the permission",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/permission_type"
+              }
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      }
+    },
+    "/permission/{permission_id}/type/{type_id}" : {
+      "get" : {
+        "tags" : [ "Permissions" ],
+        "summary" : "Get permission type by permision id and type id",
+        "description" : "Get permission type by permision id and type id",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "type_id",
+          "in" : "path",
+          "description" : "The type id",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "permission_id",
+          "in" : "path",
+          "description" : "The permission id",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the type specified by the permisison id and type id",
+            "schema" : {
+              "$ref" : "#/definitions/permission_type"
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "404" : {
+            "description" : "Not found",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Permissions" ],
+        "summary" : "Attach a type to the permission\n",
+        "description" : "Create a new type\n",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "type_id",
+          "in" : "path",
+          "description" : "The type id",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "permission_id",
+          "in" : "path",
+          "description" : "The permission id",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "permission_type",
+          "description" : "The host and path of this permission endpoint, necessary only for the kong permission",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/permission_type_obj"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the created permission type",
+            "schema" : {
+              "$ref" : "#/definitions/permission_type"
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "examples" : {
+              "application/json" : "{\n  code: 400,\n  message: 'Typ id not provided',\n  reference: '2af1f872-7ce7-11e5-9c38-80fa5b131b9d'\n}\n"
+            },
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "Permissions" ],
+        "summary" : "Detatch the type from the permssion",
+        "description" : "Detatch the type from the permssion",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "type_id",
+          "in" : "path",
+          "description" : "The type id",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "permission_id",
+          "in" : "path",
+          "description" : "The permission id",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns OK if ok",
+            "schema" : {
+              "$ref" : "#/definitions/status"
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "404" : {
+            "description" : "Not found",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      },
+      "patch" : {
+        "tags" : [ "Permissions" ],
+        "summary" : "Modify a the permission type\n",
+        "description" : "Modifies the permission type\n",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "type_id",
+          "in" : "path",
+          "description" : "The type id",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "permission_id",
+          "in" : "path",
+          "description" : "The permission id",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "permission_type",
+          "description" : "The host and path of this permission endpoint, necessary only for the kong permission",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/permission_type_obj"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the modified permission type",
+            "schema" : {
+              "$ref" : "#/definitions/permission_type"
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "examples" : {
+              "application/json" : "{\n  code: 400,\n  message: 'Typ id not provided',\n  reference: '2af1f872-7ce7-11e5-9c38-80fa5b131b9d'\n}\n"
+            },
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      }
+    },
+    "/type" : {
+      "get" : {
+        "tags" : [ "Types" ],
+        "summary" : "Get all types",
+        "description" : "Get all types",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "size",
+          "in" : "query",
+          "description" : "the size of the collection to return by default will return 25 items in the collection, max 1000",
+          "required" : false,
+          "type" : "integer"
+        }, {
+          "name" : "offset",
+          "in" : "query",
+          "description" : "the offset of the collection to return",
+          "required" : false,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the types",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/type"
+              }
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Types" ],
+        "summary" : "Create a new type\n",
+        "description" : "Create a new group\n",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "type",
+          "description" : "The type object",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/type"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the created type",
+            "schema" : {
+              "$ref" : "#/definitions/type"
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "examples" : {
+              "application/json" : "{\n  code: 400,\n  message: 'Typ id not provided',\n  reference: '2af1f872-7ce7-11e5-9c38-80fa5b131b9d'\n}\n"
+            },
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      }
+    },
+    "/type/{type_id}" : {
+      "get" : {
+        "tags" : [ "Types" ],
+        "summary" : "Get type by its id\n",
+        "description" : "Get type by its id\n",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "type_id",
+          "in" : "path",
+          "description" : "The type id",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the type specified by the {type_id}",
+            "schema" : {
+              "$ref" : "#/definitions/type"
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "404" : {
+            "description" : "Not found",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "Types" ],
+        "summary" : "Delete the type by id\n",
+        "description" : "Delete the type by id\n",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "type_id",
+          "in" : "path",
+          "description" : "the type id",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns OK if ok",
+            "schema" : {
+              "$ref" : "#/definitions/status"
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "404" : {
+            "description" : "Not found",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      },
+      "patch" : {
+        "tags" : [ "Types" ],
+        "summary" : "Update the attributes of the type\n",
+        "description" : "Update the attributes of the type\n",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "type_id",
+          "in" : "path",
+          "description" : "the type id",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "type",
+          "description" : "the attributes of the type to be updated",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/type"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the modified group",
+            "schema" : {
+              "$ref" : "#/definitions/type"
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "404" : {
+            "description" : "Not found",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      }
+    },
+    "/type/{type_id}/group" : {
+      "get" : {
+        "tags" : [ "Types" ],
+        "summary" : "Get groups with in the type\n",
+        "description" : "Returns the groups for a type\n",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "type_id",
+          "in" : "path",
+          "description" : "The type id",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "size",
+          "in" : "query",
+          "description" : "the size of the collection to return by default will return 25 items in the collection, max 1000",
+          "required" : false,
+          "type" : "integer"
+        }, {
+          "name" : "offset",
+          "in" : "query",
+          "description" : "the offset of the collection to return",
+          "required" : false,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the groups with in the {type_id}",
+            "schema" : {
+              "$ref" : "#/definitions/group"
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "404" : {
+            "description" : "Not found",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      }
+    },
+    "/type/{type_id}/group/count" : {
+      "get" : {
+        "tags" : [ "Types" ],
+        "summary" : "Get count of groups for the type\n",
+        "description" : "Get count of groups for the type\n",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "type_id",
+          "in" : "path",
+          "description" : "The type id",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the count of groups with in the type",
+            "schema" : {
+              "$ref" : "#/definitions/count"
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "404" : {
+            "description" : "Not found",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      }
+    },
+    "/type/{type_id}/permission" : {
+      "get" : {
+        "tags" : [ "Types" ],
+        "summary" : "Get permissions with in the type\n",
+        "description" : "Returns the permissions for a type\n",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "type_id",
+          "in" : "path",
+          "description" : "The type id",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "size",
+          "in" : "query",
+          "description" : "the size of the collection to return by default will return 25 items in the collection, max 1000",
+          "required" : false,
+          "type" : "integer"
+        }, {
+          "name" : "offset",
+          "in" : "query",
+          "description" : "the offset of the collection to return",
+          "required" : false,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the permission with in the {type_id}",
+            "schema" : {
+              "$ref" : "#/definitions/permission"
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "404" : {
+            "description" : "Not found",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      }
+    },
+    "/type/{type_id}/permission/count" : {
+      "get" : {
+        "tags" : [ "Types" ],
+        "summary" : "Get count of permissions for the type\n",
+        "description" : "Get count of permissions for the type\n",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "type_id",
+          "in" : "path",
+          "description" : "The type id",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the count of permissions with in the type",
+            "schema" : {
+              "$ref" : "#/definitions/count"
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "404" : {
+            "description" : "Not found",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      }
+    },
+    "/group" : {
+      "get" : {
+        "tags" : [ "Groups" ],
+        "summary" : "Get user all groups\n",
+        "description" : "Get all groups\n",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "size",
+          "in" : "query",
+          "description" : "the size of the collection to return by default will return 25 items in the collection, max 1000",
+          "required" : false,
+          "type" : "integer"
+        }, {
+          "name" : "offset",
+          "in" : "query",
+          "description" : "the offset of the collection to return",
+          "required" : false,
+          "type" : "integer"
+        }, {
+          "name" : "type",
+          "in" : "query",
+          "description" : "filter by type",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the groups",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/group"
+              }
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Groups" ],
+        "summary" : "Create a new group\n",
+        "description" : "Create a new group\n",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "group",
+          "description" : "The group object",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/group"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the created group",
+            "schema" : {
+              "$ref" : "#/definitions/group"
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "examples" : {
+              "application/json" : "{\n  code: 400,\n  message: 'User id not provided',\n  reference: '2af1f872-7ce7-11e5-9c38-80fa5b131b9d'\n}\n"
+            },
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      }
+    },
+    "/user" : {
+      "get" : {
+        "tags" : [ "Users" ],
+        "summary" : "Get user all users\n",
+        "description" : "Get all users\n",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "size",
+          "in" : "query",
+          "description" : "the size of the collection to return by default will return 25 items in the collection, max 1000",
+          "required" : false,
+          "type" : "integer"
+        }, {
+          "name" : "offset",
+          "in" : "query",
+          "description" : "the offset of the collection to return",
+          "required" : false,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the users",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/user"
+              }
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Users" ],
+        "summary" : "Create a new user\n",
+        "description" : "Create a new user\n",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "user",
+          "description" : "The user object\n",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/user_post"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the created user",
+            "schema" : {
+              "$ref" : "#/definitions/user_with_permission"
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "examples" : {
+              "application/json" : "{\n  code: 400,\n  message: 'User id not provided',\n  reference: '2af1f872-7ce7-11e5-9c38-80fa5b131b9d'\n}\n"
+            },
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      }
+    },
+    "/group/{group_id}" : {
+      "get" : {
+        "tags" : [ "Groups" ],
+        "summary" : "Get group by its id\n",
+        "description" : "Get group by its id\n",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "group_id",
+          "in" : "path",
+          "description" : "The group id",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the group specified by the {group_id}",
+            "schema" : {
+              "$ref" : "#/definitions/group"
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "404" : {
+            "description" : "Not found",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "Groups" ],
+        "summary" : "Delete the group by id\n",
+        "description" : "Delete the group by id\n",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "group_id",
+          "in" : "path",
+          "description" : "the group id",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns OK if ok",
+            "schema" : {
+              "$ref" : "#/definitions/status"
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "404" : {
+            "description" : "Not found",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      },
+      "patch" : {
+        "tags" : [ "Groups" ],
+        "summary" : "Update the attributes of the group\n",
+        "description" : "Update the attributes of the group\n",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "group_id",
+          "in" : "path",
+          "description" : "the group id",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "group",
+          "description" : "the attributes of the group to be updated",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/group"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the modified group",
+            "schema" : {
+              "$ref" : "#/definitions/group"
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "404" : {
+            "description" : "Not found",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      }
+    },
+    "/group/count" : {
+      "get" : {
+        "tags" : [ "Groups" ],
+        "summary" : "Get the count of groups\n",
+        "description" : "Get the count of groups\n",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "type",
+          "in" : "query",
+          "description" : "filter by type",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the count of groups",
+            "schema" : {
+              "$ref" : "#/definitions/count"
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      }
+    },
+    "/user/{user_id}/permission/all" : {
+      "get" : {
+        "tags" : [ "User Permissions" ],
+        "summary" : "Get all user permissions\n",
+        "description" : "Get all user permission\n",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "user_id",
+          "in" : "path",
+          "description" : "the user id",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "type",
+          "in" : "query",
+          "description" : "the type this permission has",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "size",
+          "in" : "query",
+          "description" : "the size of the collection to return by default will return 25 items in the collection, max 1000",
+          "required" : false,
+          "type" : "integer"
+        }, {
+          "name" : "offset",
+          "in" : "query",
+          "description" : "the offset of the collection to return",
+          "required" : false,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the permissions associates with the user",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/all_permission"
+              }
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      }
+    },
+    "/user/{user_id}" : {
+      "get" : {
+        "tags" : [ "Users" ],
+        "summary" : "Get user by its id\n",
+        "description" : "Get user by its\n",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "user_id",
+          "in" : "path",
+          "description" : "the user id",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the user specified by the {user_id}",
+            "schema" : {
+              "$ref" : "#/definitions/user"
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "404" : {
+            "description" : "Not found",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "Users" ],
+        "summary" : "Delete the user by id\n",
+        "description" : "Delete the user by id\n",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "user_id",
+          "in" : "path",
+          "description" : "the user id",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns OK if ok",
+            "schema" : {
+              "$ref" : "#/definitions/status"
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "404" : {
+            "description" : "Not found",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      }
+    },
+    "/user/count" : {
+      "get" : {
+        "tags" : [ "Users" ],
+        "summary" : "Get the count of users\n",
+        "description" : "Get the count of users\n",
+        "produces" : [ "application/json" ],
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the count of users",
+            "schema" : {
+              "$ref" : "#/definitions/count"
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      }
+    },
+    "/permission" : {
+      "get" : {
+        "tags" : [ "Permissions" ],
+        "summary" : "Get the permissions\n",
+        "description" : "Get all of the permissions\n",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "size",
+          "in" : "query",
+          "description" : "the size of the collection to return by default will return 25 items in the collection, max 1000",
+          "required" : false,
+          "type" : "integer"
+        }, {
+          "name" : "offset",
+          "in" : "query",
+          "description" : "the offset of the collection to return",
+          "required" : false,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the permissions",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/permission"
+              }
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Permissions" ],
+        "summary" : "Create a new permission",
+        "description" : "Create a new permission",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "pemission",
+          "description" : "the permission object",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/permission"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the created permission",
+            "schema" : {
+              "$ref" : "#/definitions/permission"
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      }
+    },
+    "/permission/{permission_id}" : {
+      "get" : {
+        "tags" : [ "Permissions" ],
+        "summary" : "Get permission by its id\n",
+        "description" : "Get permission by its id\n",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "permission_id",
+          "in" : "path",
+          "description" : "the permission id",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the permission specified by the {permission_id}",
+            "schema" : {
+              "$ref" : "#/definitions/permission"
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "404" : {
+            "description" : "Not found",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "Permissions" ],
+        "summary" : "Delete the permission by id\n",
+        "description" : "Delete the permission by id\n",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "permission_id",
+          "in" : "path",
+          "description" : "the permission id",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns OK if ok",
+            "schema" : {
+              "$ref" : "#/definitions/status"
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "404" : {
+            "description" : "Not found",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      },
+      "patch" : {
+        "tags" : [ "Groups" ],
+        "summary" : "Update the attributes of the permission\n",
+        "description" : "Update the attributes of the permission\n",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "permission_id",
+          "in" : "path",
+          "description" : "the permission id",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "permission",
+          "description" : "the attributes of the permission to be updated",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/permission"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the modified permission",
+            "schema" : {
+              "$ref" : "#/definitions/permission"
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "404" : {
+            "description" : "Not found",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      }
+    },
+    "/permission/count" : {
+      "get" : {
+        "tags" : [ "User Permissions" ],
+        "summary" : "Get the count of permissions\n",
+        "description" : "Get the count of permissions\n",
+        "produces" : [ "application/json" ],
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the count of permissions",
+            "schema" : {
+              "$ref" : "#/definitions/count"
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      }
+    },
+    "/user/{user_id}/permission/count" : {
+      "get" : {
+        "tags" : [ "User Permissions" ],
+        "summary" : "Get the count of permissions associated to  an account\n",
+        "description" : "Get the count of permissions associated to an account\n",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "user_id",
+          "in" : "path",
+          "description" : "the user id the permissions are attached to",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the number of permissions",
+            "examples" : {
+              "application/json" : "{\n  count: 1000\n}\n"
+            },
+            "schema" : {
+              "$ref" : "#/definitions/count"
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "404" : {
+            "description" : "Not found",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      }
+    },
+    "/group/{group_id}/permission/count" : {
+      "get" : {
+        "tags" : [ "Group Permissions" ],
+        "summary" : "Get the count of permissions associated to  a group\n",
+        "description" : "Get the count of permissions associated to a group\n",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "group_id",
+          "in" : "path",
+          "description" : "the group id the permissions are attached to",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the number of permissions",
+            "examples" : {
+              "application/json" : "{\n  count: 1000\n}\n"
+            },
+            "schema" : {
+              "$ref" : "#/definitions/count"
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "404" : {
+            "description" : "Not found",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      }
+    },
+    "/group/{group_id}/permission" : {
+      "get" : {
+        "tags" : [ "Group Permissions" ],
+        "summary" : "Get the permissions associated to a group\n",
+        "description" : "Get the permissions associated to a group\n",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "group_id",
+          "in" : "path",
+          "description" : "the group id the permissions are attached to",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the permissions",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/permission"
+              }
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "404" : {
+            "description" : "Not found",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      }
+    },
+    "/user/{user_id}/permission" : {
+      "get" : {
+        "tags" : [ "User Permissions" ],
+        "summary" : "Get the permissions associated to  an account\n",
+        "description" : "Get the permissions associated to an account\n",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "user_id",
+          "in" : "path",
+          "description" : "the user id the permissions are attached to",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the permissions",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/permission"
+              }
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "404" : {
+            "description" : "Not found",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      }
+    },
+    "/user/{user_id}/group" : {
+      "get" : {
+        "tags" : [ "Groups" ],
+        "summary" : "Get the groups associated with an account\n",
+        "description" : "Get the groups associated with an account\n",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "user_id",
+          "in" : "path",
+          "description" : "the user id the groups are attached to",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the groups",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/group"
+              }
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "404" : {
+            "description" : "Not found",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      }
+    },
+    "/user/{user_id}/group/count" : {
+      "get" : {
+        "tags" : [ "Groups" ],
+        "summary" : "Get a user's group count\n",
+        "description" : "Get the count of groups associated with a user\n",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "user_id",
+          "in" : "path",
+          "description" : "the group id the permissions are attached to",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the number of permissions",
+            "examples" : {
+              "application/json" : "{\n  count: 1000\n}\n"
+            },
+            "schema" : {
+              "$ref" : "#/definitions/count"
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "404" : {
+            "description" : "Not found",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      }
+    },
+    "/user/{user_id}/permission/{permission_id}" : {
+      "post" : {
+        "tags" : [ "Permissions" ],
+        "summary" : "Add a permission to a user",
+        "description" : "Add a permission to a user",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "user_id",
+          "in" : "path",
+          "description" : "the user id the permissions are to be added to",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "permission_id",
+          "in" : "path",
+          "description" : "the permission id to add to the user",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the created permission",
+            "schema" : {
+              "$ref" : "#/definitions/permission"
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "User Permissions" ],
+        "summary" : "Delete a permission associated to an account\n",
+        "description" : "Delete a permission associated to an account\n",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "user_id",
+          "in" : "path",
+          "description" : "the user id the permissions are attached to",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "permission_id",
+          "in" : "path",
+          "description" : "the permission id the permissions are to be added to",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns OK if ok",
+            "schema" : {
+              "$ref" : "#/definitions/status"
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "404" : {
+            "description" : "Not found",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      },
+      "patch" : {
+        "tags" : [ "Groups" ],
+        "summary" : "Update the attributes of a user's permission\n",
+        "description" : "Update the attributes of a user's permission\n",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "user_id",
+          "in" : "path",
+          "description" : "the user id the permissions are to be added to",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "permission_id",
+          "in" : "path",
+          "description" : "the permission id to be changed",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "permission_group",
+          "description" : "the attributes of the permission group to be updated (R±W±D)",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/permission"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the modified permission",
+            "schema" : {
+              "$ref" : "#/definitions/permission"
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "404" : {
+            "description" : "Not found",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      }
+    },
+    "/group/{group_id}/permission/{permission_id}" : {
+      "post" : {
+        "tags" : [ "Permissions" ],
+        "summary" : "Add a group premission",
+        "description" : "Add a group permission to a group",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "group_id",
+          "in" : "path",
+          "description" : "the group id the permissions are to be added to",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "permission_id",
+          "in" : "path",
+          "description" : "the permission id to add to the group",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the created permission",
+            "schema" : {
+              "$ref" : "#/definitions/permission"
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "User Permissions" ],
+        "summary" : "Delete a group permission\n",
+        "description" : "Delete a permission associated with a group\n",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "group_id",
+          "in" : "path",
+          "description" : "the group id",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "permission_id",
+          "in" : "path",
+          "description" : "the permission id to be deleted",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns OK if ok",
+            "schema" : {
+              "$ref" : "#/definitions/status"
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "404" : {
+            "description" : "Not found",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      },
+      "patch" : {
+        "tags" : [ "Groups" ],
+        "summary" : "Update a group permission\n",
+        "description" : "Update the attributes of a user's permission\n",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "group_id",
+          "in" : "path",
+          "description" : "the group id",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "permission_id",
+          "in" : "path",
+          "description" : "the permission id",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "group_permission",
+          "description" : "the attributes of the permission group to be updated (R±W±D)",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/group_permission"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the modified permission",
+            "schema" : {
+              "$ref" : "#/definitions/group_permission"
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "404" : {
+            "description" : "Not found",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      }
+    },
+    "/user/{user_id}/group/{group_id}" : {
+      "post" : {
+        "tags" : [ "Groups" ],
+        "summary" : "Add user to group",
+        "description" : "Attach a user to a group",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "user_id",
+          "in" : "path",
+          "description" : "the user id\n",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "group_id",
+          "in" : "path",
+          "description" : "the group id\n",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the group the user is now attached to",
+            "schema" : {
+              "$ref" : "#/definitions/group"
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "Groups" ],
+        "summary" : "Detach account from group\n",
+        "description" : "Detach a user account from a group\n",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "user_id",
+          "in" : "path",
+          "description" : "the user id",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "group_id",
+          "in" : "path",
+          "description" : "the group id",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns OK if ok",
+            "schema" : {
+              "$ref" : "#/definitions/status"
+            }
+          },
+          "400" : {
+            "description" : "Error",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "404" : {
+            "description" : "Not found",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "date_obj" : {
+      "type" : "object",
+      "properties" : {
+        "date" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "timezone_type" : {
+          "type" : "number"
+        },
+        "timezone" : {
+          "type" : "string"
+        }
+      }
+    },
+    "permission" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "slug" : {
+          "type" : "string"
+        },
+        "short_description" : {
+          "type" : "string"
+        },
+        "description" : {
+          "type" : "string"
+        },
+        "record_creation" : {
+          "$ref" : "#/definitions/date_obj"
+        },
+        "last_updated" : {
+          "$ref" : "#/definitions/date_obj"
+        },
+        "deleted_at" : {
+          "$ref" : "#/definitions/date_obj"
+        }
+      }
+    },
+    "permission_with_type" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "slug" : {
+          "type" : "string"
+        },
+        "short_description" : {
+          "type" : "string"
+        },
+        "types" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/permission_type"
+          }
+        },
+        "description" : {
+          "type" : "string"
+        },
+        "record_creation" : {
+          "$ref" : "#/definitions/date_obj"
+        },
+        "last_updated" : {
+          "$ref" : "#/definitions/date_obj"
+        },
+        "deleted_at" : {
+          "$ref" : "#/definitions/date_obj"
+        }
+      }
+    },
+    "group_permission" : {
+      "type" : "object",
+      "properties" : {
+        "permission_group" : {
+          "type" : "string"
+        }
+      }
+    },
+    "count" : {
+      "type" : "object",
+      "properties" : {
+        "count" : {
+          "type" : "number",
+          "format" : "integer"
+        }
+      }
+    },
+    "group" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "slug" : {
+          "type" : "string"
+        },
+        "description" : {
+          "type" : "string"
+        },
+        "last_updated" : {
+          "$ref" : "#/definitions/date_obj"
+        },
+        "record_creation" : {
+          "$ref" : "#/definitions/date_obj"
+        }
+      }
+    },
+    "permission_type" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "slug" : {
+          "type" : "string"
+        },
+        "permission_id" : {
+          "type" : "string"
+        },
+        "upstream_url" : {
+          "type" : "string"
+        },
+        "route" : {
+          "type" : "string"
+        },
+        "short_description" : {
+          "type" : "string"
+        },
+        "last_updated" : {
+          "$ref" : "#/definitions/date_obj"
+        },
+        "record_creation" : {
+          "$ref" : "#/definitions/date_obj"
+        }
+      }
+    },
+    "group_type" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "slug" : {
+          "type" : "string"
+        },
+        "group_id" : {
+          "type" : "string"
+        },
+        "last_updated" : {
+          "$ref" : "#/definitions/date_obj"
+        },
+        "record_creation" : {
+          "$ref" : "#/definitions/date_obj"
+        }
+      }
+    },
+    "type" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "slug" : {
+          "type" : "string"
+        },
+        "short_description" : {
+          "type" : "string"
+        },
+        "last_updated" : {
+          "$ref" : "#/definitions/date_obj"
+        },
+        "record_creation" : {
+          "$ref" : "#/definitions/date_obj"
+        }
+      }
+    },
+    "user" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "last_updated" : {
+          "$ref" : "#/definitions/date_obj"
+        },
+        "record_creation" : {
+          "$ref" : "#/definitions/date_obj"
+        }
+      }
+    },
+    "user_post" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "default_group_slug" : {
+          "type" : "string"
+        },
+        "last_updated" : {
+          "$ref" : "#/definitions/date_obj"
+        },
+        "record_creation" : {
+          "$ref" : "#/definitions/date_obj"
+        }
+      }
+    },
+    "all_permission" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "inherited" : {
+          "type" : "string"
+        },
+        "permission_group" : {
+          "type" : "string"
+        },
+        "permission" : {
+          "$ref" : "#/definitions/permission_with_type"
+        },
+        "last_updated" : {
+          "$ref" : "#/definitions/date_obj"
+        },
+        "record_creation" : {
+          "$ref" : "#/definitions/date_obj"
+        }
+      }
+    },
+    "permission_group_obj" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "permission_group" : {
+          "type" : "string"
+        },
+        "last_updated" : {
+          "$ref" : "#/definitions/date_obj"
+        },
+        "record_creation" : {
+          "$ref" : "#/definitions/date_obj"
+        }
+      }
+    },
+    "permission_type_obj" : {
+      "type" : "object",
+      "properties" : {
+        "upstream_url" : {
+          "type" : "string"
+        },
+        "route" : {
+          "type" : "string"
+        }
+      }
+    },
+    "user_with_permission" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "permission_group" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/permission_group_obj"
+          }
+        },
+        "last_updated" : {
+          "$ref" : "#/definitions/date_obj"
+        },
+        "record_creation" : {
+          "$ref" : "#/definitions/date_obj"
+        }
+      }
+    },
+    "error" : {
+      "type" : "object",
+      "properties" : {
+        "code" : {
+          "type" : "number"
+        },
+        "message" : {
+          "type" : "string"
+        },
+        "reference" : {
+          "type" : "string"
+        }
+      }
+    },
+    "status" : {
+      "type" : "object",
+      "properties" : {
+        "code" : {
+          "type" : "number"
+        },
+        "status" : {
+          "type" : "string",
+          "enum" : [ "ok" ]
+        }
+      }
+    }
+  }
+}
