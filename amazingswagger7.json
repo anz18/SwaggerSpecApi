@@ -1,0 +1,1263 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "Core of the cardia training plattform",
+    "version" : "0.1",
+    "title" : "core",
+    "contact" : {
+      "name" : "Bernabé García",
+      "email" : "berbe.garcia@globant.com"
+    }
+  },
+  "host" : "api.cardiatraining.com",
+  "basePath" : "/v0.1",
+  "schemes" : [ "https" ],
+  "produces" : [ "application/json" ],
+  "paths" : {
+    "/labs" : {
+      "post" : {
+        "tags" : [ "lab" ],
+        "summary" : "Update an existing lab",
+        "description" : "",
+        "operationId" : "updateLab",
+        "consumes" : [ "application/json", "application/xml" ],
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "description" : "Lab object that needs to be updated",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/Lab"
+          }
+        } ],
+        "responses" : {
+          "400" : {
+            "description" : "Invalid ID supplied"
+          },
+          "404" : {
+            "description" : "Lab not found"
+          },
+          "405" : {
+            "description" : "Validation exception"
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "lab" ],
+        "summary" : "Add a new lab",
+        "description" : "",
+        "operationId" : "addLab",
+        "consumes" : [ "application/json", "application/xml" ],
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "description" : "Lab object that needs to be added",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/Lab"
+          }
+        } ],
+        "responses" : {
+          "405" : {
+            "description" : "Invalid input"
+          }
+        }
+      }
+    },
+    "/labs/findByCategory" : {
+      "get" : {
+        "tags" : [ "lab" ],
+        "summary" : "Finds Labs by Category",
+        "description" : "Multiple category values can be provided with comma seperated strings",
+        "operationId" : "findLabsByCategory",
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "name" : "category",
+          "in" : "query",
+          "description" : "Category values that need to be considered for filter",
+          "required" : false,
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "multi"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Lab"
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid status value"
+          }
+        }
+      }
+    },
+    "/labs/findByTag" : {
+      "get" : {
+        "tags" : [ "lab" ],
+        "summary" : "Finds Labs by Tag",
+        "description" : "Multiple tag values can be provided with comma seperated strings",
+        "operationId" : "findLabsByTag",
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "name" : "tag",
+          "in" : "query",
+          "description" : "Tag values that need to be considered for filter",
+          "required" : false,
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "multi"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Lab"
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid status value"
+          }
+        }
+      }
+    },
+    "/labs/findByCareer" : {
+      "get" : {
+        "tags" : [ "lab" ],
+        "summary" : "Finds Labs by Carrer",
+        "description" : "Multiple carrer values can be provided with comma seperated strings",
+        "operationId" : "findLabsByCarrer",
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "name" : "tag",
+          "in" : "query",
+          "description" : "Carrer values that need to be considered for filter",
+          "required" : false,
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "multi"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Lab"
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid status value"
+          }
+        }
+      }
+    },
+    "/labs/{labId}" : {
+      "get" : {
+        "tags" : [ "lab" ],
+        "summary" : "Find lab by ID",
+        "description" : "Returns a lab by ID",
+        "operationId" : "getLabById",
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "name" : "labId",
+          "in" : "path",
+          "description" : "ID of lab that needs to be fetched",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Lab"
+            }
+          },
+          "400" : {
+            "description" : "Invalid ID supplied"
+          },
+          "404" : {
+            "description" : "Lab not found"
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "lab" ],
+        "summary" : "Updates a lab with form data",
+        "description" : "",
+        "operationId" : "updateLabWithForm",
+        "consumes" : [ "application/x-www-form-urlencoded" ],
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "name" : "labId",
+          "in" : "path",
+          "description" : "ID of lab that needs to be updated",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "405" : {
+            "description" : "Invalid input"
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "lab" ],
+        "summary" : "Deletes a lab",
+        "description" : "",
+        "operationId" : "deleteLab",
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "name" : "api_key",
+          "in" : "header",
+          "description" : "",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "labId",
+          "in" : "path",
+          "description" : "Lab id to delete",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "400" : {
+            "description" : "Invalid lab value"
+          }
+        }
+      }
+    },
+    "/tags" : {
+      "post" : {
+        "tags" : [ "tag" ],
+        "summary" : "Update an existing tag",
+        "description" : "",
+        "operationId" : "updateTag",
+        "consumes" : [ "application/json", "application/xml" ],
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "description" : "Tag object that needs to be updated",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/Tag"
+          }
+        } ],
+        "responses" : {
+          "400" : {
+            "description" : "Invalid ID supplied"
+          },
+          "404" : {
+            "description" : "Tag not found"
+          },
+          "405" : {
+            "description" : "Validation exception"
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "tag" ],
+        "summary" : "Add a new tag",
+        "description" : "",
+        "operationId" : "addTag",
+        "consumes" : [ "application/json", "application/xml" ],
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "description" : "Tag object that needs to be added",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/Tag"
+          }
+        } ],
+        "responses" : {
+          "405" : {
+            "description" : "Invalid input"
+          }
+        }
+      }
+    },
+    "/tags/findByName" : {
+      "get" : {
+        "tags" : [ "tag" ],
+        "summary" : "Finds Tag by name",
+        "operationId" : "findTagsByName",
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "name" : "category",
+          "in" : "query",
+          "description" : "Name value that need to be considered for filter",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Tag"
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid tag value"
+          }
+        }
+      }
+    },
+    "/tags/{tagId}" : {
+      "get" : {
+        "tags" : [ "tag" ],
+        "summary" : "Find tag by ID",
+        "description" : "Returns a tag by ID",
+        "operationId" : "getTagById",
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "name" : "tagId",
+          "in" : "path",
+          "description" : "ID of tag that needs to be fetched",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Tag"
+            }
+          },
+          "400" : {
+            "description" : "Invalid ID supplied"
+          },
+          "404" : {
+            "description" : "Tag not found"
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "tag" ],
+        "summary" : "Updates a tag with form data",
+        "description" : "",
+        "operationId" : "updateTagWithForm",
+        "consumes" : [ "application/x-www-form-urlencoded" ],
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "name" : "tagId",
+          "in" : "path",
+          "description" : "ID of lab that needs to be updated",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "405" : {
+            "description" : "Invalid input"
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "tag" ],
+        "summary" : "Deletes a tag",
+        "description" : "",
+        "operationId" : "deleteTag",
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "name" : "api_key",
+          "in" : "header",
+          "description" : "",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "tagId",
+          "in" : "path",
+          "description" : "Tag id to delete",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "400" : {
+            "description" : "Invalid tag value"
+          }
+        }
+      }
+    },
+    "/badges" : {
+      "post" : {
+        "tags" : [ "badge" ],
+        "summary" : "Update an existing badge",
+        "description" : "",
+        "operationId" : "updateBadge",
+        "consumes" : [ "application/json", "application/xml" ],
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "description" : "Badge object that needs to be updated",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/Badge"
+          }
+        } ],
+        "responses" : {
+          "400" : {
+            "description" : "Invalid ID supplied"
+          },
+          "404" : {
+            "description" : "Badge not found"
+          },
+          "405" : {
+            "description" : "Validation exception"
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "badge" ],
+        "summary" : "Add a new badge",
+        "description" : "",
+        "operationId" : "addBadge",
+        "consumes" : [ "application/json", "application/xml" ],
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "description" : "Badge object that needs to be added",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/Badge"
+          }
+        } ],
+        "responses" : {
+          "405" : {
+            "description" : "Invalid input"
+          }
+        }
+      }
+    },
+    "/badges/findByName" : {
+      "get" : {
+        "tags" : [ "badge" ],
+        "summary" : "Finds Badges by name",
+        "operationId" : "findBadgesByName",
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "name" : "category",
+          "in" : "query",
+          "description" : "Name value that need to be considered for filter",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Badge"
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid badge value"
+          }
+        }
+      }
+    },
+    "/badges/{badgeId}" : {
+      "get" : {
+        "tags" : [ "badge" ],
+        "summary" : "Find badge by ID",
+        "description" : "Returns a badge by ID",
+        "operationId" : "getBadgeById",
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "name" : "badgeId",
+          "in" : "path",
+          "description" : "ID of badge that needs to be fetched",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Badge"
+            }
+          },
+          "400" : {
+            "description" : "Invalid ID supplied"
+          },
+          "404" : {
+            "description" : "Badge not found"
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "badge" ],
+        "summary" : "Updates a badge with form data",
+        "description" : "",
+        "operationId" : "updateBadgeWithForm",
+        "consumes" : [ "application/x-www-form-urlencoded" ],
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "name" : "badgeId",
+          "in" : "path",
+          "description" : "ID of badge that needs to be updated",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "405" : {
+            "description" : "Invalid input"
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "badge" ],
+        "summary" : "Deletes a badge",
+        "description" : "",
+        "operationId" : "deleteBadge",
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "name" : "api_key",
+          "in" : "header",
+          "description" : "",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "badgeId",
+          "in" : "path",
+          "description" : "Badge id to delete",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "400" : {
+            "description" : "Invalid badge value"
+          }
+        }
+      }
+    },
+    "/categories" : {
+      "post" : {
+        "tags" : [ "category" ],
+        "summary" : "Update an existing category",
+        "description" : "",
+        "operationId" : "updateCategory",
+        "consumes" : [ "application/json", "application/xml" ],
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "description" : "Category object that needs to be updated",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/Category"
+          }
+        } ],
+        "responses" : {
+          "400" : {
+            "description" : "Invalid ID supplied"
+          },
+          "404" : {
+            "description" : "Category not found"
+          },
+          "405" : {
+            "description" : "Validation exception"
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "category" ],
+        "summary" : "Add a new category",
+        "description" : "",
+        "operationId" : "addCategory",
+        "consumes" : [ "application/json", "application/xml" ],
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "description" : "Category object that needs to be added",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/Category"
+          }
+        } ],
+        "responses" : {
+          "405" : {
+            "description" : "Invalid input"
+          }
+        }
+      }
+    },
+    "/categories/findByName" : {
+      "get" : {
+        "tags" : [ "category" ],
+        "summary" : "Finds Categories by name",
+        "operationId" : "findCategoriesByName",
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "name" : "category",
+          "in" : "query",
+          "description" : "Name value that need to be considered for filter",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Category"
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid category value"
+          }
+        }
+      }
+    },
+    "/categories/{categoryId}" : {
+      "get" : {
+        "tags" : [ "category" ],
+        "summary" : "Find category by ID",
+        "description" : "Returns a badge by ID",
+        "operationId" : "getCategoryById",
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "name" : "categoryId",
+          "in" : "path",
+          "description" : "ID of category that needs to be fetched",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Category"
+            }
+          },
+          "400" : {
+            "description" : "Invalid ID supplied"
+          },
+          "404" : {
+            "description" : "Category not found"
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "category" ],
+        "summary" : "Updates a category with form data",
+        "description" : "",
+        "operationId" : "updateCategoryWithForm",
+        "consumes" : [ "application/x-www-form-urlencoded" ],
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "name" : "categoryId",
+          "in" : "path",
+          "description" : "ID of category that needs to be updated",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "405" : {
+            "description" : "Invalid input"
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "category" ],
+        "summary" : "Deletes a category",
+        "description" : "",
+        "operationId" : "deleteCategory",
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "name" : "api_key",
+          "in" : "header",
+          "description" : "",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "categoryId",
+          "in" : "path",
+          "description" : "Category id to delete",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "400" : {
+            "description" : "Invalid badge value"
+          }
+        }
+      }
+    },
+    "/users" : {
+      "post" : {
+        "tags" : [ "user" ],
+        "summary" : "Create user",
+        "description" : "This can only be done by the logged in user.",
+        "operationId" : "createUser",
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "description" : "Created user object",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/User"
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "successful operation"
+          }
+        }
+      }
+    },
+    "/users/createWithArray" : {
+      "post" : {
+        "tags" : [ "user" ],
+        "summary" : "Creates list of users with given input array",
+        "description" : "",
+        "operationId" : "createUsersWithArrayInput",
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "description" : "List of user object",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/User"
+            }
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "successful operation"
+          }
+        }
+      }
+    },
+    "/users/createWithList" : {
+      "post" : {
+        "tags" : [ "user" ],
+        "summary" : "Creates list of users with given input array",
+        "description" : "",
+        "operationId" : "createUsersWithListInput",
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "description" : "List of user object",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/User"
+            }
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "successful operation"
+          }
+        }
+      }
+    },
+    "/users/login" : {
+      "get" : {
+        "tags" : [ "user" ],
+        "summary" : "Logs user into the system",
+        "description" : "",
+        "operationId" : "loginUser",
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "name" : "username",
+          "in" : "query",
+          "description" : "The user name for login",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "password",
+          "in" : "query",
+          "description" : "The password for login in clear text",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "string"
+            }
+          },
+          "400" : {
+            "description" : "Invalid username/password supplied"
+          }
+        }
+      }
+    },
+    "/users/logout" : {
+      "get" : {
+        "tags" : [ "user" ],
+        "summary" : "Logs out current logged in user session",
+        "description" : "",
+        "operationId" : "logoutUser",
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ ],
+        "responses" : {
+          "default" : {
+            "description" : "successful operation"
+          }
+        }
+      }
+    },
+    "/users/{username}" : {
+      "get" : {
+        "tags" : [ "user" ],
+        "summary" : "Get user by user name",
+        "description" : "",
+        "operationId" : "getUserByName",
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "name" : "username",
+          "in" : "path",
+          "description" : "The name that needs to be fetched. Use user1 for testing.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/User"
+            }
+          },
+          "400" : {
+            "description" : "Invalid username supplied"
+          },
+          "404" : {
+            "description" : "User not found"
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "user" ],
+        "summary" : "Updated user",
+        "description" : "This can only be done by the logged in user.",
+        "operationId" : "updateUser",
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "name" : "username",
+          "in" : "path",
+          "description" : "name that need to be deleted",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "description" : "Updated user object",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/User"
+          }
+        } ],
+        "responses" : {
+          "400" : {
+            "description" : "Invalid user supplied"
+          },
+          "404" : {
+            "description" : "User not found"
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "user" ],
+        "summary" : "Delete user",
+        "description" : "This can only be done by the logged in user.",
+        "operationId" : "deleteUser",
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "name" : "username",
+          "in" : "path",
+          "description" : "The name that needs to be deleted",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "400" : {
+            "description" : "Invalid username supplied"
+          },
+          "404" : {
+            "description" : "User not found"
+          }
+        }
+      }
+    },
+    "/users/{username}/labs" : {
+      "get" : {
+        "tags" : [ "user", "lab" ],
+        "summary" : "Finds all labs for a user",
+        "operationId" : "findlabsByUsername",
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "name" : "username",
+          "in" : "path",
+          "description" : "Userame value that need to be considered for filter",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Enrollment"
+            }
+          },
+          "400" : {
+            "description" : "Invalid Username supplied"
+          },
+          "404" : {
+            "description" : "Enrollments not found"
+          }
+        }
+      }
+    },
+    "/careers" : {
+      "post" : {
+        "tags" : [ "career" ],
+        "summary" : "Update an existing career",
+        "description" : "",
+        "operationId" : "updateCareer",
+        "consumes" : [ "application/json", "application/xml" ],
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "description" : "Career object that needs to be updated",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/Career"
+          }
+        } ],
+        "responses" : {
+          "400" : {
+            "description" : "Invalid ID supplied"
+          },
+          "404" : {
+            "description" : "Career not found"
+          },
+          "405" : {
+            "description" : "Validation exception"
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "career" ],
+        "summary" : "Add a new career",
+        "description" : "",
+        "operationId" : "addCareer",
+        "consumes" : [ "application/json", "application/xml" ],
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "description" : "Career object that needs to be added",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/Career"
+          }
+        } ],
+        "responses" : {
+          "405" : {
+            "description" : "Invalid input"
+          }
+        }
+      }
+    },
+    "/careers/findByName" : {
+      "get" : {
+        "tags" : [ "career" ],
+        "summary" : "Finds Careers by name",
+        "operationId" : "findCareersByName",
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "name" : "career",
+          "in" : "query",
+          "description" : "Name value that need to be considered for filter",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Career"
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid career value"
+          }
+        }
+      }
+    },
+    "/careers/{careerId}" : {
+      "get" : {
+        "tags" : [ "career" ],
+        "summary" : "Find career by ID",
+        "description" : "Returns a career by ID",
+        "operationId" : "getCareerById",
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "name" : "careerId",
+          "in" : "path",
+          "description" : "ID of career that needs to be fetched",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Career"
+            }
+          },
+          "400" : {
+            "description" : "Invalid ID supplied"
+          },
+          "404" : {
+            "description" : "Career not found"
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "career" ],
+        "summary" : "Updates a career with form data",
+        "description" : "",
+        "operationId" : "updateCareerWithForm",
+        "consumes" : [ "application/x-www-form-urlencoded" ],
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "name" : "careerId",
+          "in" : "path",
+          "description" : "ID of career that needs to be updated",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "405" : {
+            "description" : "Invalid input"
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "career" ],
+        "summary" : "Deletes a career",
+        "description" : "",
+        "operationId" : "deleteCareer",
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "name" : "api_key",
+          "in" : "header",
+          "description" : "",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "careerId",
+          "in" : "path",
+          "description" : "Career id to delete",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "400" : {
+            "description" : "Invalid badge value"
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "Lab" : {
+      "type" : "object",
+      "required" : [ "lab_id", "title" ],
+      "properties" : {
+        "lab_id" : {
+          "type" : "string",
+          "description" : "Unique identifier."
+        },
+        "title" : {
+          "type" : "string",
+          "description" : "Display name of the Lab."
+        },
+        "description" : {
+          "type" : "string",
+          "description" : "Description of the Lab."
+        },
+        "readme_url" : {
+          "type" : "string",
+          "description" : "URL for the documentation start (README)."
+        },
+        "duration" : {
+          "type" : "string",
+          "description" : "Time to solve the Lab in minutes. Can use a pattern like 10*60 (10hs)."
+        },
+        "categories" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Category"
+          }
+        },
+        "tags" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Tag"
+          }
+        },
+        "carrers" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Career"
+          }
+        },
+        "git_url" : {
+          "type" : "string",
+          "description" : "URL for the git repository."
+        }
+      }
+    },
+    "Category" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "name" : {
+          "type" : "string"
+        }
+      },
+      "description" : "Category of the lab (Moblie, Java, DevOPS...)"
+    },
+    "Tag" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "name" : {
+          "type" : "string"
+        }
+      }
+    },
+    "Career" : {
+      "type" : "object",
+      "properties" : {
+        "name" : {
+          "type" : "string"
+        },
+        "careers" : {
+          "$ref" : "#/definitions/Career"
+        }
+      }
+    },
+    "User" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "username" : {
+          "type" : "string"
+        },
+        "firstName" : {
+          "type" : "string"
+        },
+        "lastName" : {
+          "type" : "string"
+        },
+        "email" : {
+          "type" : "string"
+        },
+        "password" : {
+          "type" : "string"
+        },
+        "badges" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Badge"
+          }
+        },
+        "userStatus" : {
+          "type" : "integer",
+          "format" : "int32",
+          "description" : "User Status"
+        }
+      }
+    },
+    "Enrollment" : {
+      "type" : "object",
+      "properties" : {
+        "start" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "end" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "user" : {
+          "$ref" : "#/definitions/User"
+        },
+        "lab" : {
+          "$ref" : "#/definitions/Lab"
+        }
+      }
+    },
+    "Badge" : {
+      "type" : "object",
+      "properties" : {
+        "name" : {
+          "type" : "string"
+        }
+      }
+    }
+  }
+}
