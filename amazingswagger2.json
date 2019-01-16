@@ -1,0 +1,67 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "Swagger representation of the VOOT2 Group API",
+    "version" : "0.1.0",
+    "title" : "VOOT2 Group API"
+  },
+  "host" : "foo.bar",
+  "basePath" : "/voot/v2/",
+  "schemes" : [ "http", "https" ],
+  "consumes" : [ "application/json" ],
+  "produces" : [ "application/json;charset=UTF-8" ],
+  "security" : [ {
+    "oauth" : [ "basic" ]
+  } ],
+  "paths" : {
+    "/groups" : {
+      "get" : {
+        "description" : "This endpoint returns all *active* group members of the specified group. Expired or otherwise inactive members will not returned by default.",
+        "operationId" : "hasMembers",
+        "produces" : [ "application/json;charset=UTF-8" ],
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "examples" : {
+              "ids" : [ "3544", "4366", "2653" ]
+            },
+            "schema" : {
+              "$ref" : "#/definitions/Members"
+            }
+          }
+        }
+      }
+    }
+  },
+  "securityDefinitions" : {
+    "oauth" : {
+      "type" : "oauth2",
+      "authorizationUrl" : "https://foo.bar/oauth/authorize/?client_id=CLIENT-ID&redirect_uri=REDIRECT-URI&response_type=token",
+      "flow" : "implicit",
+      "scopes" : {
+        "basic" : "to retrieve list of members of a specified group\n"
+      }
+    }
+  },
+  "definitions" : {
+    "Members" : {
+      "type" : "object",
+      "properties" : {
+        "ids" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/MemberId"
+          }
+        }
+      }
+    },
+    "MemberId" : {
+      "properties" : {
+        "id_str" : {
+          "type" : "string"
+        }
+      }
+    }
+  }
+}
