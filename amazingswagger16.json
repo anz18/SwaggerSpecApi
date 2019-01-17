@@ -1,0 +1,4334 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "Splitvice API",
+    "version" : "0.2",
+    "title" : "Splitvice API"
+  },
+  "paths" : {
+    "/portfolio" : {
+      "get" : {
+        "description" : "Gets the `Portfolio` objects the logged in user has access to\n",
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "title" : "ArrayOfPortfolios",
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/PortfolioSummary"
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "description" : "add / create a portfolio. The logged in user automatically gets all rights to the portfolio. Default workflows are created in the portfolio.",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "portfolio",
+          "description" : "The data of the portfolio to create. Only the Name is used.",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/Portfolio"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response. The portfolio Id will be filled in the response body.",
+            "schema" : {
+              "$ref" : "#/definitions/Portfolio"
+            }
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}" : {
+      "get" : {
+        "summary" : "Find portfolio by ID",
+        "description" : "returns the portfolio object of the portfolio spcified by portfolioid. \nUnlike the /portfolio get, this does require a portfolio specified in the http header\n",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "description" : "ID of portfolio that needs to be fetched",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "$ref" : "#/definitions/Portfolio"
+            }
+          }
+        }
+      },
+      "put" : {
+        "description" : "update a portfolio",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "description" : "ID of portfolio that needs to be updated",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "portfolio",
+          "description" : "The data of the portfolio to update. \nOnly 2 fields will be used to update:\n- Name\n- ActiveScenario\n\nIf a field does not need to be updated, don't supply it or pass an empty string.\nTo update access rights or workflows, go through their APIs\n",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/Portfolio"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response. The updated portfolio is returned.",
+            "schema" : {
+              "$ref" : "#/definitions/Portfolio"
+            }
+          },
+          "404" : {
+            "description" : "Portfolio was not found or the scenario specified was not found"
+          }
+        }
+      },
+      "delete" : {
+        "description" : "delete a portfolio",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "description" : "ID of portfolio that needs to be delete",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response. The portfolio is deleted."
+          },
+          "404" : {
+            "description" : "Portfolio was not found"
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/accessRight/{UserId}" : {
+      "put" : {
+        "description" : "update access of a user to the portfolio",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "description" : "ID of the portfolio of which the user should be updated",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "UserId",
+          "in" : "path",
+          "description" : "ID of the user of which the access grants should be updated",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "accessGrants",
+          "in" : "query",
+          "description" : "the list of access grants. Can be tasks, projects, portfolios",
+          "required" : true,
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "multi"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response"
+          },
+          "400" : {
+            "description" : "bad request. E.g. the user cannot update itself"
+          },
+          "404" : {
+            "description" : "not found. The user was not found in the portfolio access grants"
+          }
+        }
+      },
+      "delete" : {
+        "description" : "remove access of a user to the portfolio",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "description" : "ID of the portfolio of which the user should be removed",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "UserId",
+          "in" : "path",
+          "description" : "ID of the user which should be removed from the portfolio",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response"
+          },
+          "400" : {
+            "description" : "bad request. E.g. the user cannot delete itself"
+          },
+          "404" : {
+            "description" : "not found. The user was not found in the portfolio access grants"
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/peoplerole" : {
+      "get" : {
+        "description" : "get the roles of the people defined in the portfolio",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "$ref" : "#/definitions/peopleRoles"
+            }
+          },
+          "400" : {
+            "description" : "Bad Request. Check the portfolio"
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/peoplerole/{UserId}" : {
+      "put" : {
+        "description" : "update the roles of the specified user in the portfolio. If the user had no specific roles yet, it will be added",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "UserId",
+          "in" : "path",
+          "description" : "ID of the user of which the roles should be updated",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "newPeopleRoles",
+          "description" : "The new roles of the specified user TODO",
+          "required" : true,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/role"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successfully updated"
+          },
+          "404" : {
+            "description" : "Could not find portfolio"
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/project" : {
+      "get" : {
+        "description" : "list all projects of the portfolio",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "type" : "array",
+              "description" : "the projects. Note that the Project.ProjectPhases[].DaysDone is not filled in. This is only calculated if you get a specific project",
+              "items" : {
+                "$ref" : "#/definitions/Project"
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request. Did you forget the portfolio in the header?"
+          },
+          "404" : {
+            "description" : "portfolio not found."
+          }
+        }
+      },
+      "post" : {
+        "description" : "create a new project",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "project",
+          "description" : "The data of the project to create. the ID is not used.",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/ProjectCreation"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response. The project Id will be filled in the response body.",
+            "schema" : {
+              "$ref" : "#/definitions/Project"
+            }
+          },
+          "400" : {
+            "description" : "Bad Request. E.g. an Abbreviation was passed that was already used for another project"
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/project/{projectId}" : {
+      "get" : {
+        "description" : "get the details of the project with the specified Id",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "projectId",
+          "in" : "path",
+          "description" : "the unique Id of the project",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "$ref" : "#/definitions/Project"
+            }
+          },
+          "400" : {
+            "description" : "Bad Request. Did you forget the portfolio in the header?"
+          }
+        }
+      },
+      "put" : {
+        "description" : "update a project",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "projectId",
+          "in" : "path",
+          "description" : "the unique Id of the project to be updated",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "project",
+          "description" : "The data of the project to update. the ID is not used.",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/Project"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successfully updated"
+          },
+          "400" : {
+            "description" : "Bad request. Duplicate abbreviation."
+          },
+          "404" : {
+            "description" : "portfolio or project not found"
+          }
+        }
+      },
+      "delete" : {
+        "description" : "delete a project",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "projectId",
+          "in" : "path",
+          "description" : "the unique Id of the project to be deleted",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successfully deleted"
+          },
+          "404" : {
+            "description" : "portfolio or project not found"
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/project/{projectId}/copy" : {
+      "post" : {
+        "description" : "copy the project with the specified Id",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "projectId",
+          "in" : "path",
+          "description" : "the unique Id of the project",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "CopyParameters",
+          "description" : "the new name and abbreviation of the copy",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/NameAndAbbreviation"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "$ref" : "#/definitions/Project"
+            }
+          },
+          "400" : {
+            "description" : "Bad Request. Did you forget the portfolio in the header?"
+          },
+          "404" : {
+            "description" : "project not found, so it can not be copied"
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/project/{projectId}/phase/{locatorId}" : {
+      "post" : {
+        "description" : "create a phase in the project with the specified Id",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "projectId",
+          "in" : "path",
+          "description" : "the unique Id of the project",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "locatorId",
+          "in" : "path",
+          "description" : "the order in the list of phases. 0 = the first phase.",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "ProjectPhase",
+          "description" : "the parameters of the created project phase. The Id is not used.",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/ProjectPhase"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response. The response gives the created phase, including the Id",
+            "schema" : {
+              "$ref" : "#/definitions/ProjectPhase"
+            }
+          },
+          "400" : {
+            "description" : "Bad Request. Did you forget the portfolio in the header?"
+          },
+          "404" : {
+            "description" : "portfolio or project not found"
+          }
+        }
+      },
+      "put" : {
+        "description" : "update a project phase",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "projectId",
+          "in" : "path",
+          "description" : "the unique Id of the project",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "locatorId",
+          "in" : "path",
+          "description" : "the ID if the phase to update. The name locaterId was chosen to make swagger happy in the overlap with the POST command",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "ProjectPhase",
+          "description" : "the parameters of the project phase. Fill in what needs to be updated.",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/ProjectPhase"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response."
+          },
+          "400" : {
+            "description" : "Bad Request. Did you forget the portfolio in the header?"
+          },
+          "404" : {
+            "description" : "portfolio or project or phase not found"
+          }
+        },
+        "x-comment" : "previously was here: /portfolio/{portfolioId}/project/{projectId}/phase/{phaseId}"
+      }
+    },
+    "/portfolio/{portfolioId}/project/{projectId}/phase/{phaseId}/role/{roleId}" : {
+      "put" : {
+        "description" : "update the load on a role in a certain project phase",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "projectId",
+          "in" : "path",
+          "description" : "the unique Id of the project",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "phaseId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "roleId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "RoleLoad",
+          "description" : "the parameters of the project phase. A single struct with only 1 parameter. If the Load is 0, the role load will be 0 and hence removed.",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/ProjectPhaseRoleLoadParameter"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response."
+          },
+          "400" : {
+            "description" : "Bad Request. Did you forget the portfolio in the header?"
+          },
+          "404" : {
+            "description" : "portfolio or project or phase not found"
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/project/{projectId}/structure" : {
+      "get" : {
+        "description" : "get the structure of a project. This is a tree of tasks.",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "projectId",
+          "in" : "path",
+          "description" : "the unique Id of the project",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response.",
+            "schema" : {
+              "$ref" : "#/definitions/ProjectStructure"
+            }
+          },
+          "400" : {
+            "description" : "Bad Request. Did you forget the portfolio in the header?"
+          },
+          "404" : {
+            "description" : "portfolio or project or not found. Or, a referenced new ID of a task was not found."
+          }
+        }
+      },
+      "put" : {
+        "description" : "This function is depleted. Use smaller function to update tasks and dependencies",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "description" : "This function is depleted",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "projectId",
+          "in" : "path",
+          "description" : "This function is depleted",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "400" : {
+            "description" : "Bad Request. The function is depleted"
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/project/{projectId}/task" : {
+      "get" : {
+        "description" : "get the tasks of a project",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "projectId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/ProjectStructureTask"
+              }
+            }
+          },
+          "400" : {
+            "description" : "bad request. The portfolio was not supplied or invalid"
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/project/{projectId}/task/{taskId}/start" : {
+      "post" : {
+        "description" : "start a task. This can only be done on a subtask.",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "projectId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "taskId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response.",
+            "schema" : {
+              "type" : "array",
+              "description" : "the tasks that are created",
+              "items" : {
+                "$ref" : "#/definitions/Task"
+              }
+            }
+          },
+          "404" : {
+            "description" : "portfolio or project or task not found."
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/project/{projectId}/task/{taskId}/subtask" : {
+      "post" : {
+        "description" : "add a subtask to a task in the project structure",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "projectId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "taskId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "task",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/TaskCreation"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response. This will return the task with the new task ID",
+            "schema" : {
+              "$ref" : "#/definitions/ProjectStructureTask"
+            }
+          },
+          "400" : {
+            "description" : "Bad Request. Did you forget the portfolio in the header?"
+          },
+          "404" : {
+            "description" : "portfolio or project or parent task not found. Or one of the dependencies was not found"
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/project/{projectId}/task/{taskId}" : {
+      "put" : {
+        "description" : "update a task from a project structure.",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "projectId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "taskId",
+          "in" : "path",
+          "description" : "the ID of the task to delete",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "task",
+          "description" : "Don't use Dependencies or Subtasks. Use smaller API functions to update these.",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/ProjectStructureTask"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response."
+          },
+          "400" : {
+            "description" : "Bad Request. Check the parameters"
+          },
+          "404" : {
+            "description" : "portfolio or project or task not found. Or a dependency task was not found.             "
+          }
+        }
+      },
+      "delete" : {
+        "description" : "delete a task from a project structure. Depending tasks will lose their dependency",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "projectId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "taskId",
+          "in" : "path",
+          "description" : "the ID of the task to delete",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response. This will return the list of IDs of other tasks that lost their dependency on the removed task.",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "type" : "string"
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request. Did you forget the portfolio in the header?"
+          },
+          "404" : {
+            "description" : "portfolio or project not found. Or the task was found on the top level which is not a valid task to delete since those are the phases of a project"
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/project/{projectId}/task/{taskId}/copy" : {
+      "post" : {
+        "description" : "copy a subtask in the project structure",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "projectId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "taskId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "CopyProjectTaskParamaters",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/CopyProjectTaskParamaters"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response."
+          },
+          "400" : {
+            "description" : "Bad Request. Check the parameters"
+          },
+          "404" : {
+            "description" : "portfolio or project or task or dependency task not found. "
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/project/{projectId}/task/{taskId}/dependency" : {
+      "post" : {
+        "description" : "add a dependency of subtask to another task in the project structure",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "projectId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "taskId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "dependency",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/Dependency"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response."
+          },
+          "400" : {
+            "description" : "Bad Request. Check the parameters"
+          },
+          "404" : {
+            "description" : "portfolio or project or task or dependency task not found. "
+          }
+        }
+      },
+      "put" : {
+        "description" : "update a dependency of subtask to another task in the project structure",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "projectId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "taskId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "dependency",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/Dependency"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response."
+          },
+          "400" : {
+            "description" : "Bad Request. Check the parameters"
+          },
+          "404" : {
+            "description" : "portfolio or project or task or dependency task not found. "
+          }
+        }
+      },
+      "delete" : {
+        "description" : "delete a dependency of subtask to another task in the project structure",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "projectId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "taskId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "dependantTaskId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response."
+          },
+          "400" : {
+            "description" : "Bad Request. Check the parameters"
+          },
+          "404" : {
+            "description" : "portfolio or project or task or dependency task not found. "
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/project/{projectId}/task/{taskId}/worklog" : {
+      "get" : {
+        "description" : "get the worklogs for a project task",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "projectId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "taskId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response.",
+            "schema" : {
+              "type" : "array",
+              "description" : "an array of worklogs",
+              "items" : {
+                "$ref" : "#/definitions/Worklog"
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "description" : "add a worklog for a project task",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "projectId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "taskId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "worklog",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/Worklog"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response.",
+            "schema" : {
+              "$ref" : "#/definitions/Worklog"
+            }
+          },
+          "400" : {
+            "description" : "Bad Request. Check the parameters"
+          },
+          "404" : {
+            "description" : "portfolio or project or task or dependency task not found. "
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/project/{projectId}/task/{taskId}/worklog/{worklogId}" : {
+      "put" : {
+        "description" : "update a worklog for a project task",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "projectId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "taskId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "worklogId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "worklog",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/Worklog"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response."
+          },
+          "400" : {
+            "description" : "Bad Request. Check the parameters, especially the last parameter."
+          },
+          "404" : {
+            "description" : "portfolio or project or task or worklog not found. "
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/project/{projectId}/timecalculation" : {
+      "get" : {
+        "description" : "get the time calculation of a project. This is for each task the time when it starts, unbound by resources, but only by dependencies.",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "projectId",
+          "in" : "path",
+          "description" : "the unique Id of the project",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response.",
+            "schema" : {
+              "type" : "array",
+              "description" : "the timing of the project tasks. Note that some tasks might not get a timing if e.g. they are part of a circular dependency",
+              "items" : {
+                "$ref" : "#/definitions/Timing"
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request. Did you forget the portfolio in the header?"
+          },
+          "404" : {
+            "description" : "portfolio or project or not found."
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/routine" : {
+      "get" : {
+        "description" : "get the routines",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "type" : "array",
+              "description" : "all the routines.",
+              "items" : {
+                "$ref" : "#/definitions/Routine"
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request."
+          },
+          "404" : {
+            "description" : "portfolio not found."
+          }
+        }
+      },
+      "post" : {
+        "description" : "create a new routine",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "routine",
+          "description" : "The data of the routine to create. the ID is not used.",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/Routine"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response. The routine Id will be filled in the response body.",
+            "schema" : {
+              "$ref" : "#/definitions/Routine"
+            }
+          },
+          "400" : {
+            "description" : "Bad Request. Did you forget the portfolio in the header?"
+          },
+          "404" : {
+            "description" : "Not found. The portfolio specified in the header was not found"
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/routine/{routineId}" : {
+      "get" : {
+        "description" : "get the details of the routine with the specified Id",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "routineId",
+          "in" : "path",
+          "description" : "the unique Id of the routine",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "$ref" : "#/definitions/Routine"
+            }
+          },
+          "400" : {
+            "description" : "Bad Request. Did you forget the portfolio in the header?"
+          }
+        }
+      },
+      "put" : {
+        "description" : "update a routine",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "routineId",
+          "in" : "path",
+          "description" : "the unique Id of the routine to be updated",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "routine",
+          "description" : "The data of the routine to update. the ID is not used.",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/Routine"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successfully updated"
+          },
+          "404" : {
+            "description" : "portfolio or project not found"
+          }
+        }
+      },
+      "delete" : {
+        "description" : "delete a routine",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "routineId",
+          "in" : "path",
+          "description" : "the unique Id of the routine to be deleted",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successfully deleted"
+          },
+          "404" : {
+            "description" : "portfolio or routine not found"
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/routine/{routineId}/copy" : {
+      "post" : {
+        "description" : "copy the routine with the specified Id",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "routineId",
+          "in" : "path",
+          "description" : "the unique Id of the routine",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "CopyParameters",
+          "description" : "the new name and abbreviation of the copy",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/NameAndAbbreviation"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "$ref" : "#/definitions/Routine"
+            }
+          },
+          "400" : {
+            "description" : "Bad Request. Did you forget the portfolio in the header?"
+          },
+          "404" : {
+            "description" : "routine not found, so it can not be copied"
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/routine/{routineId}/period" : {
+      "post" : {
+        "description" : "create a period in the routine with the specified Id",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "routineId",
+          "in" : "path",
+          "description" : "the unique Id of the routine",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "RoutinePeriod",
+          "description" : "the parameters of the created routine period. The Id is not used.",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/RoutinePeriod"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response. The response gives the created period, including the Id",
+            "schema" : {
+              "$ref" : "#/definitions/RoutinePeriod"
+            }
+          },
+          "400" : {
+            "description" : "Bad Request. Did you forget the portfolio in the header?"
+          },
+          "404" : {
+            "description" : "portfolio or routine not found"
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/routine/{routineId}/period/{periodId}" : {
+      "put" : {
+        "description" : "update a routine period",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "routineId",
+          "in" : "path",
+          "description" : "the unique Id of the routine",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "periodId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "RoutinePeriod",
+          "description" : "the parameters of the routine period. Fill in what needs to be updated.",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/RoutinePeriod"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response."
+          },
+          "400" : {
+            "description" : "Bad Request. Did you forget the portfolio in the header?"
+          },
+          "404" : {
+            "description" : "portfolio or routine or period not found"
+          }
+        }
+      },
+      "delete" : {
+        "description" : "delete a routine period",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "routineId",
+          "in" : "path",
+          "description" : "the unique Id of the routine",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "periodId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response. Period is deleted"
+          },
+          "400" : {
+            "description" : "Bad Request. Did you forget the portfolio in the header?"
+          },
+          "404" : {
+            "description" : "portfolio or routine or period not found"
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/routine/{routineId}/period/{periodId}/role/{roleId}" : {
+      "put" : {
+        "description" : "update the role load of a routine period",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "routineId",
+          "in" : "path",
+          "description" : "the unique Id of the routine",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "periodId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "roleId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "RoleLoad",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/RoleLoad_1"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response."
+          },
+          "400" : {
+            "description" : "Bad Request. Did you forget the portfolio in the header?"
+          },
+          "404" : {
+            "description" : "portfolio or routine or period or role not found"
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/routine/{routineId}/task" : {
+      "post" : {
+        "description" : "create a task in the routine with the specified Id",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "routineId",
+          "in" : "path",
+          "description" : "the unique Id of the routine",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "RoutineTask",
+          "description" : "the parameters of the created routine task. Name, EstimatedDays and WorkflowId are used",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/RoutineTask"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response. The response gives the created task, including the Id",
+            "schema" : {
+              "$ref" : "#/definitions/Task"
+            }
+          },
+          "400" : {
+            "description" : "Bad Request. Did you forget the portfolio in the header?"
+          },
+          "404" : {
+            "description" : "portfolio or routine not found"
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/scenario" : {
+      "get" : {
+        "description" : "list all scenario's of the portfolio",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "title" : "ArrayOfScenarios",
+              "type" : "array",
+              "description" : "the scenarios.",
+              "items" : {
+                "$ref" : "#/definitions/Scenario"
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request. Did you forget the portfolio in the header?"
+          }
+        }
+      },
+      "post" : {
+        "description" : "create a new scenario. In the supplied scenario parameter, the ID is not used",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "scenario",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/Scenario"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful response",
+            "schema" : {
+              "$ref" : "#/definitions/Scenario"
+            }
+          },
+          "400" : {
+            "description" : "bad request. The portfolio or the scenario parameter was bdaly formed or the name was not supplied"
+          },
+          "404" : {
+            "description" : "portfolio not found"
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/scenario/{scenarioId}" : {
+      "get" : {
+        "description" : "get specified scenario of the portfolio",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "scenarioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "$ref" : "#/definitions/Scenario"
+            }
+          },
+          "400" : {
+            "description" : "Bad Request. Did you forget the portfolio in the header?"
+          },
+          "404" : {
+            "description" : "the specified scenario was not found."
+          }
+        }
+      },
+      "put" : {
+        "description" : "update the specified scenario of the portfolio",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "scenarioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "scenario",
+          "description" : "the new version of the scenario. Only the filled in fields are updated, the rest is left untouched. The Id is not used. If you update a list, be sure to provide the whole list since the list will be replaced as a whole.",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/Scenario"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response. Scenario was deleted."
+          },
+          "400" : {
+            "description" : "Bad Request. Did you forget the portfolio in the header?"
+          },
+          "404" : {
+            "description" : "the specified portfolio or scenario was not found."
+          }
+        }
+      },
+      "delete" : {
+        "description" : "delete the specified scenario of the portfolio",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "scenarioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response. Scenario was updated."
+          },
+          "400" : {
+            "description" : "Bad Request. Did you forget the portfolio in the header? Did you try to delete the active scenario?"
+          },
+          "404" : {
+            "description" : "the specified portfolio or scenario was not found."
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/scenario/{scenarioId}/activate" : {
+      "post" : {
+        "description" : "make the specified scenario active",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "scenarioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful response. The new scenario is active"
+          },
+          "400" : {
+            "description" : "bad request. The portfolio or the name was not or badly supplied"
+          },
+          "404" : {
+            "description" : "portfolio not found or scenario not found"
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/scenario/{scenarioId}/copy" : {
+      "post" : {
+        "description" : "create a new scenario as a copy from the specified scenario",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "scenarioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "name",
+          "description" : "the new name of the copy",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/Name"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful response",
+            "schema" : {
+              "$ref" : "#/definitions/Scenario"
+            }
+          },
+          "400" : {
+            "description" : "bad request. The portfolio or the name was not or badly supplied"
+          },
+          "404" : {
+            "description" : "portfolio not found or scenario not found"
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/scenario/{scenarioId}/recalculate" : {
+      "get" : {
+        "description" : "get a simulation of the specified scenario of the portfolio",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "scenarioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "$ref" : "#/definitions/ScenarioCalculation"
+            }
+          },
+          "400" : {
+            "description" : "Bad Request. Did you forget the portfolio in the header?"
+          },
+          "404" : {
+            "description" : "the specified scenario was not found."
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/role" : {
+      "get" : {
+        "description" : "get the roles defined in the portfolio",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "title" : "ArrayOfRoles",
+              "type" : "array",
+              "description" : "the roles.",
+              "items" : {
+                "$ref" : "#/definitions/portfoliorole"
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request. Check the portfolio"
+          }
+        }
+      },
+      "post" : {
+        "description" : "create role in the portfolio",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "roleName",
+          "description" : "The name of the role to add",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/Name"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successfully added. Returns the ID of the new role",
+            "schema" : {
+              "type" : "string"
+            }
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/role/{roleId}" : {
+      "put" : {
+        "description" : "update the name of a role in the portfolio",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "roleId",
+          "in" : "path",
+          "description" : "The role ID to update the name of",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "Name",
+          "description" : "The new name of the role.",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/Name"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successfully updated."
+          },
+          "400" : {
+            "description" : "bad request. Did you forget to supply the portfolio?"
+          },
+          "404" : {
+            "description" : "portfolio not found or roleId not found"
+          }
+        }
+      },
+      "delete" : {
+        "description" : "delete role in the portfolio. WARNING: this will (later) also delete all roles of the users,...",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "roleId",
+          "in" : "path",
+          "description" : "The role ID to delete",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successfully deleted. Returns the remaining set of roles.",
+            "schema" : {
+              "title" : "ArrayOfRoles",
+              "type" : "array",
+              "description" : "the roles.",
+              "items" : {
+                "$ref" : "#/definitions/portfoliorole"
+              }
+            }
+          },
+          "400" : {
+            "description" : "bad request. The portfolio was not supplied or invalid"
+          },
+          "404" : {
+            "description" : "Could not find portfolio or roleId"
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/role/{roleId}/copy" : {
+      "post" : {
+        "description" : "copy a role in the portfolio. People having the original role will get the same score for the new role.",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "roleId",
+          "in" : "path",
+          "description" : "The role ID to take a copy from",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "Name",
+          "description" : "The name of the new role.",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/Name"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successfully created a copy."
+          },
+          "404" : {
+            "description" : "portfolio not found or roleId not found"
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/task" : {
+      "get" : {
+        "description" : "get the tasks in the portfolio, filtered as indicated",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "ProjectIds",
+          "in" : "query",
+          "description" : "limit the tasks to certain project(s)",
+          "required" : false,
+          "type" : "integer"
+        }, {
+          "name" : "RoutineIds",
+          "in" : "query",
+          "description" : "limit the tasks to certain routine(s)",
+          "required" : false,
+          "type" : "integer"
+        }, {
+          "name" : "OnlyActive",
+          "in" : "query",
+          "description" : "smart filter that shows only tasks that can be worked on. Is the default, so set to false to see everything",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "AssignedToUserId",
+          "in" : "query",
+          "description" : "assigned to a certain user.",
+          "required" : false,
+          "type" : "integer"
+        }, {
+          "name" : "AssignedToGroupId",
+          "in" : "query",
+          "description" : "assigned to any member of a certain user group.",
+          "required" : false,
+          "type" : "integer"
+        }, {
+          "name" : "AssignedToRoleId",
+          "in" : "query",
+          "description" : "assigned to users with a specific role. Not implemented yet.",
+          "required" : false,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "type" : "array",
+              "description" : "the tasks.",
+              "items" : {
+                "$ref" : "#/definitions/Task"
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request. Check the portfolio"
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/task/{taskId}" : {
+      "put" : {
+        "description" : "update a task, e.g. to assign a user",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "taskId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "taskItem",
+          "description" : "the new values for a task, e.g. of the AssignedUserId",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/Task"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "type" : "array",
+              "description" : "the tasks.",
+              "items" : {
+                "$ref" : "#/definitions/Task"
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request. Check the portfolio"
+          }
+        }
+      },
+      "delete" : {
+        "description" : "delete a task in the portfolio. The work associated with the item will however still be there",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "taskId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response"
+          },
+          "400" : {
+            "description" : "Bad Request. Check the portfolio"
+          },
+          "404" : {
+            "description" : "portfolio or task not found"
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/task/{taskId}/assignedto" : {
+      "put" : {
+        "description" : "set the task assignment to a user, user group or role",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "taskId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "AssignedToParameter",
+          "description" : "set Assignment to a user, user group or role. if all null, the assignment is set to null",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/AssignedToParameter"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response, with the updated task",
+            "schema" : {
+              "$ref" : "#/definitions/Task"
+            }
+          },
+          "400" : {
+            "description" : "Bad Request. Check the last paramater"
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/task/{taskId}/duedate" : {
+      "put" : {
+        "description" : "set the task due date",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "taskId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "DueDateParameter",
+          "description" : "set DueDate to null if no due date",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/DueDateParameter"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response"
+          },
+          "400" : {
+            "description" : "Bad Request. Check the last parameter"
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/task/{taskId}/roleworktodo/{roleId}" : {
+      "put" : {
+        "description" : "set the number of days a role still has to work on the related project or routine task",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "taskId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "roleId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "taskRoleWorktoDo",
+          "description" : "the number of days the role still needs to perform to finish the corresponding project or routine task",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/taskRoleWorktoDo"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response"
+          },
+          "400" : {
+            "description" : "Bad Request. Check the last parameter"
+          },
+          "404" : {
+            "description" : "portfolio or task or role ID not found"
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/task/{taskId}/status" : {
+      "put" : {
+        "description" : "set the tast status",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "taskId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "taskStatusInput",
+          "description" : "the state change as defined in the workflow that needs to be followed to update the status",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/taskStatusInput"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "type" : "object",
+              "properties" : {
+                "DeletedTaskIds" : {
+                  "type" : "array",
+                  "items" : {
+                    "type" : "integer",
+                    "description" : "the id of a ended / deleted task"
+                  }
+                },
+                "UpdatedTasks" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/definitions/Task"
+                  }
+                }
+              },
+              "description" : "the tasks."
+            }
+          },
+          "400" : {
+            "description" : "Bad Request. Check the last parameter"
+          },
+          "404" : {
+            "description" : "portfolio or task or state change ID not found or no current status found that corresponds to the specified state change"
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/task/kanban" : {
+      "get" : {
+        "description" : "get the kanban boards in the portfolio",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "type" : "array",
+              "description" : "the boards with limited information (e.g. no UIData).",
+              "items" : {
+                "$ref" : "#/definitions/LimitedKanbanBoard"
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not found. Check the portfolio"
+          }
+        }
+      },
+      "post" : {
+        "description" : "create a kanban board",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "kanbanBoardParameters",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/KanbanBoard"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response. The created board is returned in the response, including the ID",
+            "schema" : {
+              "$ref" : "#/definitions/KanbanBoard"
+            }
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/task/kanban/{kanbanBoardId}" : {
+      "get" : {
+        "description" : "get the specified kanban board with all data",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "kanbanBoardId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response. All info including UIData is returned",
+            "schema" : {
+              "$ref" : "#/definitions/KanbanBoard"
+            }
+          },
+          "404" : {
+            "description" : "Not found. Check the portfolio"
+          }
+        }
+      },
+      "put" : {
+        "description" : "update the data of the kanban board",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "kanbanBoardId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "kanbanBoard",
+          "description" : "The data to update. The Id is not used",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/KanbanBoard"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successfully updated."
+          },
+          "404" : {
+            "description" : "portfolio not found or kanbanBoardId not found"
+          }
+        }
+      },
+      "delete" : {
+        "description" : "delete a kanban board. This will not delete any tasks on it",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "kanbanBoardId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successfully deleted."
+          },
+          "404" : {
+            "description" : "portfolio not found or kanbanBoardId not found"
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/task/kanban/{kanbanBoardId}/copy" : {
+      "post" : {
+        "description" : "copy a kanban board",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "kanbanBoardId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "name",
+          "in" : "query",
+          "description" : "the name of the new board. It is passed as query parameter, so e.g. a space is noted as %20",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response. The created board is returned in the response, including the ID",
+            "schema" : {
+              "$ref" : "#/definitions/KanbanBoard"
+            }
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/task/taskfilter" : {
+      "get" : {
+        "description" : "get the task filters of the user, This gives both predefined and custom filters",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "type" : "array",
+              "description" : "the task filters.",
+              "items" : {
+                "$ref" : "#/definitions/TaskFilter"
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request. Check the portfolio"
+          }
+        }
+      },
+      "post" : {
+        "description" : "create a task filter",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "TaskFilter",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/TaskFilter"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response. The created board is returned in the response, including the ID",
+            "schema" : {
+              "$ref" : "#/definitions/TaskFilter"
+            }
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/task/taskfilter/{taskFilterId}" : {
+      "get" : {
+        "description" : "get a specific task filter",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "taskFilterId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "$ref" : "#/definitions/TaskFilter"
+            }
+          },
+          "400" : {
+            "description" : "Bad Request. Check the portfolio"
+          }
+        }
+      },
+      "put" : {
+        "description" : "update the data of a task filter",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "taskFilterId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "TaskFilter",
+          "description" : "The data to update. The Id is not used",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/TaskFilter"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successfully updated."
+          },
+          "404" : {
+            "description" : "portfolio not found or taskFilterId not found"
+          }
+        }
+      },
+      "delete" : {
+        "description" : "delete a task filter. ",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "taskFilterId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successfully deleted."
+          },
+          "404" : {
+            "description" : "portfolio not found or taskFilterId not found"
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/user" : {
+      "get" : {
+        "description" : "Gets the `User` objects of all users in the current portfolio\n",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "title" : "ArrayOfUsers",
+              "type" : "array",
+              "description" : "the users. The password is not shown.",
+              "items" : {
+                "$ref" : "#/definitions/User"
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request. Did you forget the portfolio in the header?"
+          },
+          "404" : {
+            "description" : "Not found. The portfolio specified in the header was not found"
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/user/invite" : {
+      "post" : {
+        "description" : "invite a user to a portfolio. If the user is known, add it to the portfolio with the right access grants",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "inviteRequest",
+          "description" : "the user login name and the profiles to give to the user",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/InviteRequest"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation.",
+            "schema" : {
+              "$ref" : "#/definitions/InviteResponse"
+            }
+          },
+          "400" : {
+            "description" : "bad request. The portfiolio did not exist, the user already had access or the user is unknown (this latter is not implemented yet)"
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/user/{userId}/profile" : {
+      "put" : {
+        "description" : "update the profile of a user within the portfolio",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "userId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "updateProfileRequest",
+          "description" : "the new profile data",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/updateProfileRequest"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation.",
+            "schema" : {
+              "$ref" : "#/definitions/Portfolio"
+            }
+          },
+          "400" : {
+            "description" : "Bad request, no profile object provided."
+          },
+          "404" : {
+            "description" : "portfolio not found"
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/usergroup" : {
+      "get" : {
+        "description" : "Gets the user groups in the current portfolio\n",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "type" : "array",
+              "description" : "the user groups",
+              "items" : {
+                "$ref" : "#/definitions/UserGroup"
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not found. The portfolio was not found"
+          }
+        }
+      },
+      "post" : {
+        "description" : "create a user group",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "param",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/param"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response. returns the created user group",
+            "schema" : {
+              "$ref" : "#/definitions/UserGroup"
+            }
+          },
+          "404" : {
+            "description" : "Not found. The portfolio was not found"
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/usergroup/{userGroupId}" : {
+      "put" : {
+        "description" : "update a user group in the current portfolio\n",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "userGroupId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "param",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/UserGroup"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response"
+          },
+          "400" : {
+            "description" : "the user group data was badly formed"
+          },
+          "404" : {
+            "description" : "Not found. The portfolio was not found"
+          }
+        }
+      },
+      "delete" : {
+        "description" : "delete a user group from the current portfolio\n",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "userGroupId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response"
+          },
+          "404" : {
+            "description" : "Not found. The portfolio was not found"
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/usergroup/{userGroupId}/copy" : {
+      "post" : {
+        "description" : "copy a user group in the current portfolio\n",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "userGroupId",
+          "in" : "path",
+          "description" : "the group to copy",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "param",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/param_1"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "$ref" : "#/definitions/UserGroup"
+            }
+          },
+          "400" : {
+            "description" : "the user group data was badly formed"
+          },
+          "404" : {
+            "description" : "Not found. The portfolio was not found"
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/workflow" : {
+      "get" : {
+        "summary" : "get workflows",
+        "description" : "get all the workflows for the current portfolio",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "title" : "Array Of Workflows",
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Workflow"
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "description" : "create a workflow",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "parameters",
+          "description" : "the parameters to create the new workflow",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/WorkflowCreationParameters"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response. Returns the newly created default workflow, having a new ID",
+            "schema" : {
+              "$ref" : "#/definitions/Workflow"
+            }
+          },
+          "400" : {
+            "description" : "name was not or badly supplied"
+          },
+          "404" : {
+            "description" : "portfolio was not found"
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/workflow/{workflowid}" : {
+      "get" : {
+        "summary" : "Find workflow by ID",
+        "description" : "returns the workflow object of the workflow spcified by workflowid\n",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "workflowid",
+          "in" : "path",
+          "description" : "ID of workflow that needs to be fetched",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "$ref" : "#/definitions/Workflow"
+            }
+          },
+          "404" : {
+            "description" : "workflow ID not found"
+          }
+        }
+      },
+      "put" : {
+        "summary" : "Update workflow.",
+        "description" : "update a workflow, identified by its ID",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "workflowid",
+          "in" : "path",
+          "description" : "ID of workflow that needs to be updated",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "workflow",
+          "description" : "the new version of the workflow. Only filled in fields are updated, the rest is left untouched, except for States & Statechanges. These must both be present or both be null.",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/Workflow"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successfully updated"
+          },
+          "404" : {
+            "description" : "portfolio or workflow not found"
+          }
+        }
+      },
+      "delete" : {
+        "description" : "delete a workflow",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "workflowid",
+          "in" : "path",
+          "description" : "the unique Id of the workflow to be deleted",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successfully deleted"
+          },
+          "404" : {
+            "description" : "portfolio or workflow not found or the workflow is the last one and cannot be deleted"
+          }
+        }
+      }
+    },
+    "/portfolio/{portfolioId}/workflow/{workflowid}/copy" : {
+      "post" : {
+        "summary" : "copy workflow identified by ID",
+        "description" : "creates and returns a copy of the workflow specified by workflowid\n",
+        "parameters" : [ {
+          "name" : "portfolioId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "workflowid",
+          "in" : "path",
+          "description" : "ID of workflow that needs to be copied",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "newName",
+          "description" : "the name of the new workflow",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/Name"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response. Returns the copy, having a new Id.",
+            "schema" : {
+              "$ref" : "#/definitions/Workflow"
+            }
+          },
+          "404" : {
+            "description" : "workflowid was not found in portfolio"
+          }
+        }
+      }
+    },
+    "/user/{userid}" : {
+      "get" : {
+        "summary" : "Find user by ID",
+        "description" : "returns the user object of the user spcified by userid\n",
+        "parameters" : [ {
+          "name" : "userid",
+          "in" : "path",
+          "description" : "ID of user that needs to be fetched",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "$ref" : "#/definitions/User"
+            }
+          },
+          "400" : {
+            "description" : "Bad Request. Did you forget the portfolio in the header?"
+          },
+          "404" : {
+            "description" : "Not found. The portfolio specified in the header was not found"
+          }
+        }
+      },
+      "put" : {
+        "description" : "update a user",
+        "parameters" : [ {
+          "name" : "userid",
+          "in" : "path",
+          "description" : "ID of user that needs to be updated",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "user",
+          "description" : "The data of the user to update. Only the Name will be updated.",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/User"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response. No data is replied."
+          },
+          "400" : {
+            "description" : "Bad request, the user passed was not well formed."
+          }
+        }
+      }
+    },
+    "/user/environment" : {
+      "put" : {
+        "description" : "set the environment string that will be sent back at login",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "environment",
+          "description" : "a class with as only field the environment string",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/environment"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response. No data is replied."
+          }
+        }
+      }
+    },
+    "/user/login" : {
+      "post" : {
+        "description" : "login a user",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "user",
+          "description" : "The data of the user to login. The data used are LoginName and Password",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/User"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation.",
+            "schema" : {
+              "$ref" : "#/definitions/LoginResponse"
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized. Login-id or password not correct."
+          }
+        }
+      }
+    },
+    "/user/logout" : {
+      "post" : {
+        "description" : "logout a user. The token in the HTTP header will define who is logged out.",
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation."
+          }
+        }
+      }
+    },
+    "/user/register" : {
+      "post" : {
+        "description" : "add / create a user. For the moment this just creates the user. Later this will lead to a registration e-mail.",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "user",
+          "description" : "The data of the user to create. The ID should not be filled in.",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/User"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response. The user Id will be filled in the response body",
+            "schema" : {
+              "$ref" : "#/definitions/User"
+            }
+          },
+          "400" : {
+            "description" : "bad request, some parameters were bad, e.g. an empty login name, password or name"
+          },
+          "409" : {
+            "description" : "conflict; the user LoginName already existed."
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "User" : {
+      "type" : "object",
+      "properties" : {
+        "LoginName" : {
+          "type" : "string",
+          "description" : "the login is the e-mail address of the user"
+        },
+        "Password" : {
+          "type" : "string",
+          "description" : "the password. This will be null for a returned object"
+        },
+        "Name" : {
+          "type" : "string"
+        },
+        "Id" : {
+          "type" : "integer",
+          "description" : "a unique ID, used to identify the user"
+        },
+        "Environment" : {
+          "type" : "string",
+          "description" : "the environment string. This can be set with PUT api/user/environment"
+        }
+      }
+    },
+    "UserGroup" : {
+      "type" : "object",
+      "properties" : {
+        "Name" : {
+          "type" : "string"
+        },
+        "Id" : {
+          "type" : "integer",
+          "description" : "a unique ID, used to identify the user"
+        },
+        "UserIds" : {
+          "type" : "array",
+          "description" : "the list of user IDs in the user group",
+          "items" : {
+            "type" : "integer"
+          }
+        }
+      }
+    },
+    "LoginResponse" : {
+      "type" : "object",
+      "properties" : {
+        "User" : {
+          "$ref" : "#/definitions/User"
+        },
+        "Token" : {
+          "type" : "string",
+          "description" : "the security token to be used in the HTTP headers for all subsequent requests"
+        }
+      },
+      "description" : "get the user logged in. The Id of User will be filled in."
+    },
+    "InviteRequest" : {
+      "type" : "object",
+      "properties" : {
+        "LoginName" : {
+          "type" : "string",
+          "description" : "the login name which is the e-mail address"
+        },
+        "PortfolioProfiles" : {
+          "type" : "array",
+          "description" : "the list of user profiles. Can be Champion, Strategist, WorkManager, KnowledgeWorker",
+          "items" : {
+            "type" : "string"
+          }
+        }
+      }
+    },
+    "InviteResponse" : {
+      "type" : "object",
+      "properties" : {
+        "Exists" : {
+          "type" : "boolean",
+          "description" : "does the user exist already within the system"
+        },
+        "UserId" : {
+          "type" : "string"
+        }
+      }
+    },
+    "Name" : {
+      "type" : "object",
+      "properties" : {
+        "Name" : {
+          "type" : "string"
+        }
+      }
+    },
+    "NameAndAbbreviation" : {
+      "type" : "object",
+      "properties" : {
+        "Name" : {
+          "type" : "string"
+        },
+        "Abbreviation" : {
+          "type" : "string"
+        }
+      }
+    },
+    "WorkflowCreationParameters" : {
+      "type" : "object",
+      "properties" : {
+        "Name" : {
+          "type" : "string"
+        },
+        "RoleId" : {
+          "type" : "integer",
+          "description" : "the role ID that is used to create thw workflow"
+        }
+      }
+    },
+    "peopleRoles" : {
+      "type" : "object",
+      "properties" : {
+        "UserId1" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/role"
+          }
+        },
+        "UserId2..." : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/role"
+          }
+        }
+      }
+    },
+    "portfoliorole" : {
+      "type" : "object",
+      "properties" : {
+        "RoleId" : {
+          "type" : "integer"
+        },
+        "Name" : {
+          "type" : "string"
+        }
+      }
+    },
+    "role" : {
+      "type" : "object",
+      "properties" : {
+        "RoleId" : {
+          "type" : "integer"
+        },
+        "Score" : {
+          "type" : "integer",
+          "description" : "the score (0 to 200), where 100=well skilled person"
+        }
+      }
+    },
+    "Portfolio" : {
+      "type" : "object",
+      "properties" : {
+        "Id" : {
+          "type" : "integer"
+        },
+        "Name" : {
+          "type" : "string",
+          "description" : "the name of the portfolio"
+        },
+        "UserProfiles" : {
+          "$ref" : "#/definitions/UserProfiles"
+        },
+        "PeopleRoles" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/peopleRoles"
+          }
+        },
+        "Scenarios" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Scenario"
+          }
+        },
+        "ActiveScenario" : {
+          "type" : "integer",
+          "description" : "the ID of the active scenario"
+        },
+        "Workflows" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Workflow"
+          }
+        },
+        "Projects" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Project"
+          }
+        },
+        "Routines" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Routine"
+          }
+        },
+        "Roles" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/portfoliorole"
+          }
+        },
+        "UserGroups" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/UserGroup"
+          }
+        }
+      }
+    },
+    "PortfolioSummary" : {
+      "type" : "object",
+      "properties" : {
+        "Id" : {
+          "type" : "integer"
+        },
+        "Name" : {
+          "type" : "string",
+          "description" : "the name of the portfolio"
+        },
+        "Description" : {
+          "type" : "string"
+        },
+        "ActiveScenario" : {
+          "type" : "integer",
+          "description" : "the ID of the active scenario"
+        },
+        "NbrOfScenarios" : {
+          "type" : "number",
+          "description" : "the number of scenarios in the portfolio"
+        },
+        "NbrOfProjects" : {
+          "type" : "number",
+          "description" : "the number of projects in the portfolio"
+        },
+        "NbrOfRoutines" : {
+          "type" : "number",
+          "description" : "the number of routines in the portfolio"
+        },
+        "NbrOfRoles" : {
+          "type" : "number",
+          "description" : "the number of roles in the portfolio"
+        },
+        "UserProfiles" : {
+          "$ref" : "#/definitions/UserProfiles"
+        }
+      }
+    },
+    "UserProfiles" : {
+      "type" : "object",
+      "properties" : {
+        "IDx" : {
+          "type" : "array",
+          "description" : "for each userId, the list of profiles. Can be Champion, Strategist, WorkManager, KnowledgeWorker",
+          "items" : {
+            "type" : "string"
+          }
+        }
+      }
+    },
+    "Scenario" : {
+      "type" : "object",
+      "properties" : {
+        "Name" : {
+          "type" : "string"
+        },
+        "Description" : {
+          "type" : "string"
+        },
+        "Id" : {
+          "type" : "integer"
+        },
+        "UserIds" : {
+          "type" : "array",
+          "items" : {
+            "type" : "integer",
+            "description" : "the userIDs that can see/work on the scenario"
+          }
+        },
+        "UserGroupIds" : {
+          "type" : "array",
+          "items" : {
+            "type" : "integer",
+            "description" : "the IDs of the usergroups that can see/work on the scenario"
+          }
+        },
+        "ProjectDecisions" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/ProjectDecision"
+          }
+        }
+      }
+    },
+    "ScenarioCalculation" : {
+      "type" : "object",
+      "properties" : {
+        "LastCalculation" : {
+          "type" : "string",
+          "description" : "the date of the calculation"
+        },
+        "ProjectLoads" : {
+          "type" : "array",
+          "description" : "the load of each project on all people",
+          "items" : {
+            "$ref" : "#/definitions/ProjectLoads"
+          }
+        },
+        "PeopleAvailabilities" : {
+          "type" : "array",
+          "description" : "the list of periods with the availability of people in that period",
+          "items" : {
+            "$ref" : "#/definitions/PeopleAvailability"
+          }
+        },
+        "RoleProjectLoadAndPeopleAvailabilities" : {
+          "type" : "array",
+          "description" : "for each role of the projects if no restriction 2 items: the load that is taken for the amount of roles and the availaibility of the people",
+          "items" : {
+            "$ref" : "#/definitions/RoleProjectLoadAndPeopleAvailability"
+          }
+        },
+        "ProjectTimeSimulations" : {
+          "type" : "array",
+          "description" : "the simulation of each project for a scenario with the roles available",
+          "items" : {
+            "$ref" : "#/definitions/ProjectSimulation"
+          }
+        }
+      }
+    },
+    "PeopleAvailability" : {
+      "type" : "object",
+      "properties" : {
+        "From" : {
+          "type" : "string",
+          "description" : "the start date of the period"
+        },
+        "To" : {
+          "type" : "string",
+          "description" : "the end date of the period"
+        },
+        "FTEs" : {
+          "type" : "number",
+          "description" : "the number of FTEs as a floating point number that is available in that period"
+        }
+      }
+    },
+    "RoleProjectLoadAndPeopleAvailability" : {
+      "type" : "object",
+      "properties" : {
+        "RoleId" : {
+          "type" : "integer"
+        },
+        "RoleName" : {
+          "type" : "string"
+        },
+        "PeopleAvailabilities" : {
+          "type" : "array",
+          "description" : "the list of periods with the availability of people with that role in that period",
+          "items" : {
+            "$ref" : "#/definitions/PeopleAvailability"
+          }
+        },
+        "ProjectLoads" : {
+          "type" : "array",
+          "description" : "the load of each project on the role phased in time",
+          "items" : {
+            "$ref" : "#/definitions/ProjectLoads"
+          }
+        }
+      }
+    },
+    "ProjectSimulation" : {
+      "type" : "object",
+      "properties" : {
+        "ProjectId" : {
+          "type" : "integer"
+        },
+        "PhasesTimeSimulations" : {
+          "type" : "array",
+          "description" : "the simulation of each phase of the project",
+          "items" : {
+            "$ref" : "#/definitions/PhaseTimeSimulation"
+          }
+        }
+      }
+    },
+    "PhaseTimeSimulation" : {
+      "type" : "object",
+      "properties" : {
+        "PhaseId" : {
+          "type" : "string"
+        },
+        "PhaseName" : {
+          "type" : "string"
+        },
+        "From" : {
+          "type" : "string",
+          "description" : "start date of the phase"
+        },
+        "To" : {
+          "type" : "string",
+          "description" : "end date of the phase"
+        },
+        "Progress" : {
+          "type" : "number",
+          "description" : "a number between 0 and 1. 1 = 100% finished."
+        }
+      }
+    },
+    "ProjectLoads" : {
+      "type" : "object",
+      "properties" : {
+        "ProjectName" : {
+          "type" : "string"
+        },
+        "ProjectId" : {
+          "type" : "integer"
+        },
+        "Loads" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/LoadPeriod"
+          }
+        }
+      }
+    },
+    "LoadPeriod" : {
+      "type" : "object",
+      "properties" : {
+        "From" : {
+          "type" : "string",
+          "description" : "start date of the period"
+        },
+        "To" : {
+          "type" : "string",
+          "description" : "end date of the period"
+        },
+        "Load" : {
+          "type" : "number",
+          "description" : "load in FTEs during the period"
+        },
+        "Id" : {
+          "type" : "integer",
+          "description" : "the ID of the phase"
+        },
+        "PhaseName" : {
+          "type" : "string",
+          "description" : "the name of the phase"
+        }
+      }
+    },
+    "ProjectDecision" : {
+      "type" : "object",
+      "properties" : {
+        "ProjectId" : {
+          "type" : "integer"
+        },
+        "WillDo" : {
+          "type" : "boolean",
+          "description" : "will do the project or not. If not and the project is on-going, this will stop the project"
+        },
+        "EarliestStartDate" : {
+          "type" : "string",
+          "description" : "the earliest date on which the project can start in the format YYYY-MM-DD"
+        }
+      }
+    },
+    "RoutineTask" : {
+      "type" : "object",
+      "properties" : {
+        "Id" : {
+          "type" : "string"
+        },
+        "Name" : {
+          "type" : "integer",
+          "description" : "the textual name of the task"
+        },
+        "WorkflowId" : {
+          "type" : "integer",
+          "description" : "the ID of the workflow this task will follow."
+        },
+        "EstimatedDays" : {
+          "type" : "number",
+          "description" : "the total number of days this task is estimated to take. Not required"
+        }
+      }
+    },
+    "TaskCreation" : {
+      "type" : "object",
+      "properties" : {
+        "Task" : {
+          "$ref" : "#/definitions/ProjectStructureTask"
+        },
+        "DependingTasks" : {
+          "type" : "array",
+          "description" : "the list of task dependencies",
+          "items" : {
+            "$ref" : "#/definitions/Dependency"
+          }
+        }
+      }
+    },
+    "TaskMoveParameter" : {
+      "type" : "object",
+      "properties" : {
+        "ParentId" : {
+          "type" : "integer"
+        },
+        "Order" : {
+          "type" : "number",
+          "description" : "the order in the childs of the parent where the moved task should arrive. 0 = the first child"
+        }
+      }
+    },
+    "Task" : {
+      "type" : "object",
+      "properties" : {
+        "Id" : {
+          "type" : "integer"
+        },
+        "Name" : {
+          "type" : "string",
+          "description" : "the textual name of the task"
+        },
+        "FullLocalId" : {
+          "type" : "string",
+          "description" : "read-only field telling the ID within the project or routine"
+        },
+        "PortfolioId" : {
+          "type" : "integer"
+        },
+        "AssignedUserId" : {
+          "type" : "integer",
+          "description" : "null if the task is not assigned to a user, or the ID if it is."
+        },
+        "AssignedUserGroupId" : {
+          "type" : "integer",
+          "description" : "null if the task is not assigned to a user group, or the ID if it is."
+        },
+        "AssignedRoleId" : {
+          "type" : "integer",
+          "description" : "null if the task is not assigned to a role, or the ID if it is."
+        },
+        "EstimatedDays" : {
+          "type" : "number"
+        },
+        "RoleWorkToDo" : {
+          "$ref" : "#/definitions/Task_RoleWorkToDo"
+        },
+        "RoleWorkDone" : {
+          "$ref" : "#/definitions/Task_RoleWorkToDo"
+        },
+        "ProjectId" : {
+          "type" : "integer"
+        },
+        "ProjectName" : {
+          "type" : "string"
+        },
+        "ProjectTaskId" : {
+          "type" : "integer"
+        },
+        "RoutineId" : {
+          "type" : "integer"
+        },
+        "RoutineName" : {
+          "type" : "string"
+        },
+        "RoutineTaskId" : {
+          "type" : "integer"
+        },
+        "WorkflowId" : {
+          "type" : "integer",
+          "description" : "the ID of the workflow this task will follow."
+        },
+        "WorkflowName" : {
+          "type" : "string"
+        },
+        "DueDate" : {
+          "type" : "string",
+          "description" : "the date when the task should be finished."
+        },
+        "IsCompleted" : {
+          "type" : "string",
+          "description" : "is the task completed or not? Read-only field."
+        },
+        "WorkflowStatusId" : {
+          "type" : "integer",
+          "description" : "The ID of the state in the workflow."
+        },
+        "IsInTaskWaiting" : {
+          "type" : "boolean",
+          "description" : "true if the task is in workflow state Task and is waiting rather than Doing."
+        },
+        "WorkflowStatusName" : {
+          "type" : "string"
+        }
+      }
+    },
+    "TaskFilter" : {
+      "type" : "object",
+      "properties" : {
+        "Id" : {
+          "type" : "integer"
+        },
+        "Name" : {
+          "type" : "string",
+          "description" : "the textual name of the task filter"
+        },
+        "Definition" : {
+          "type" : "string",
+          "description" : "the client definition of the filter. It should reflect the choices the user made when defining the filter"
+        },
+        "IsPredefined" : {
+          "type" : "boolean",
+          "description" : "is the filter predefined or not. predefined filters have description ASSIGNEDTOME and SUITSME"
+        }
+      }
+    },
+    "LimitedKanbanBoard" : {
+      "type" : "object",
+      "properties" : {
+        "Id" : {
+          "type" : "integer"
+        },
+        "Name" : {
+          "type" : "string",
+          "description" : "the textual name of the Kanban board"
+        }
+      }
+    },
+    "KanbanBoard" : {
+      "type" : "object",
+      "properties" : {
+        "Id" : {
+          "type" : "integer"
+        },
+        "Name" : {
+          "type" : "string",
+          "description" : "the textual name of the Kanban board"
+        },
+        "UIData" : {
+          "type" : "string"
+        }
+      }
+    },
+    "WorkflowStatus" : {
+      "type" : "object",
+      "properties" : {
+        "CurrentStatusId" : {
+          "type" : "integer"
+        },
+        "NextStatusIds" : {
+          "type" : "array",
+          "items" : {
+            "type" : "integer"
+          }
+        }
+      }
+    },
+    "Workflow" : {
+      "type" : "object",
+      "properties" : {
+        "Name" : {
+          "type" : "string",
+          "description" : "the name of the workflow"
+        },
+        "Id" : {
+          "type" : "integer"
+        },
+        "States" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/State"
+          }
+        },
+        "StateChanges" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/StateChange"
+          }
+        },
+        "UIData" : {
+          "type" : "string",
+          "description" : "field to store UI specific data. For predefined states this has a form like \"predefined\""
+        }
+      }
+    },
+    "Worklog" : {
+      "type" : "object",
+      "properties" : {
+        "Id" : {
+          "type" : "integer",
+          "description" : "read-only ID"
+        },
+        "UserId" : {
+          "type" : "integer"
+        },
+        "RoleId" : {
+          "type" : "integer"
+        },
+        "TaskStatusId" : {
+          "type" : "integer"
+        },
+        "Days" : {
+          "type" : "number"
+        },
+        "Date" : {
+          "type" : "string"
+        },
+        "WorkFlowStateWhenLogged" : {
+          "type" : "integer",
+          "description" : "read-only value for what the workflow state the TaskStatus was when logged"
+        }
+      }
+    },
+    "State" : {
+      "type" : "object",
+      "properties" : {
+        "Name" : {
+          "type" : "string",
+          "description" : "the name of the state"
+        },
+        "Id" : {
+          "type" : "integer",
+          "description" : "a unique ID of the state. For existing states, the generated ID will be a positive integer. For new states, provide a negative integer."
+        },
+        "StateType" : {
+          "type" : "string",
+          "description" : "possible types are \"Start\", \"End\", \"Task\", \"Exclusive\", \"Parallel\", \"Note\", \"Inclusive\", \"Timer\", \"LinkIn\" and \"LinkOut\""
+        },
+        "VisibleInKanban" : {
+          "type" : "boolean",
+          "description" : "is this state visible in kanban or not"
+        },
+        "PossibleKanbanTargetStates" : {
+          "type" : "array",
+          "description" : "the list of state IDs where a task in the kanban state can be dragged to",
+          "items" : {
+            "type" : "integer",
+            "description" : "a possible target state ID"
+          }
+        },
+        "RoleId" : {
+          "type" : "integer",
+          "description" : "the ID of the role that is required to do this task"
+        },
+        "UIData" : {
+          "type" : "string",
+          "description" : "field to store UI specific data. For predefined states this has a form like \"predefined, states=3, stateNr=1\""
+        }
+      }
+    },
+    "StateChange" : {
+      "type" : "object",
+      "properties" : {
+        "Name" : {
+          "type" : "string",
+          "description" : "the name of the state change. This is the name of the action that leads from the source state to the target state"
+        },
+        "Id" : {
+          "type" : "integer",
+          "description" : "a unique ID of the state change. There is no need to fill this in by the client"
+        },
+        "SourceStateId" : {
+          "type" : "integer",
+          "description" : "the ID of the state that is the origine of the state change"
+        },
+        "TargetStateId" : {
+          "type" : "integer",
+          "description" : "the ID of the state that is the goal of the state change"
+        },
+        "UIData" : {
+          "type" : "string",
+          "description" : "field to store UI specific data. For predefined states this will be \"predefined\""
+        }
+      }
+    },
+    "ProjectCreation" : {
+      "type" : "object",
+      "properties" : {
+        "Project" : {
+          "$ref" : "#/definitions/Project"
+        },
+        "WillDoInScenarios" : {
+          "type" : "boolean",
+          "description" : "will the newly created project be active in the scenarios or not?"
+        },
+        "EarliestStartDateInScenarios" : {
+          "type" : "string",
+          "description" : "the earliest start date this project will get in the scenarios"
+        }
+      }
+    },
+    "Project" : {
+      "type" : "object",
+      "properties" : {
+        "Name" : {
+          "type" : "string",
+          "description" : "the name of the project"
+        },
+        "Abbreviation" : {
+          "type" : "string",
+          "description" : "a short-hand name for a project. Often something like 3 characters only"
+        },
+        "Id" : {
+          "type" : "integer",
+          "description" : "a unique ID of the project, generated by the server"
+        },
+        "Weight" : {
+          "type" : "integer",
+          "description" : "the weight of the project. Advized is to use cost-of-delay"
+        },
+        "UIData" : {
+          "type" : "string",
+          "description" : "field to store UI specific data."
+        },
+        "UserIds" : {
+          "type" : "array",
+          "description" : "the list of users that are allowed access to a project",
+          "items" : {
+            "type" : "integer",
+            "description" : "the user ID"
+          }
+        },
+        "UserGroupIds" : {
+          "type" : "array",
+          "description" : "the list of user groups that are allowed access to a project",
+          "items" : {
+            "type" : "integer",
+            "description" : "the user group ID"
+          }
+        },
+        "Phases" : {
+          "type" : "array",
+          "description" : "the list of project phases, in an ordered list",
+          "items" : {
+            "$ref" : "#/definitions/ProjectPhase"
+          }
+        }
+      }
+    },
+    "ProjectPhase" : {
+      "type" : "object",
+      "properties" : {
+        "Name" : {
+          "type" : "string",
+          "description" : "the name of the project phase. This will also be the name of the L2 task"
+        },
+        "NameOfEnd" : {
+          "type" : "string",
+          "description" : "the name of the end of the project phase. This will be the milestone in the L2 view. Default could e.g. be 'End of [Name]'"
+        },
+        "Id" : {
+          "type" : "integer",
+          "description" : "a unique ID of the project phase, generated by the server"
+        },
+        "UIData" : {
+          "type" : "string",
+          "description" : "field to store UI specific data."
+        },
+        "EstimatedDays" : {
+          "type" : "number",
+          "description" : "the number of elapsed days required to complete this phase. These are days on which is worked. E.g. if you have a 5 days workweek, use 10 to indicate 2 weeks. This is a floating number."
+        },
+        "DaysDone" : {
+          "type" : "number",
+          "description" : "a read-only parameter indicating how much days have already been spent on this phase. From this field and the Estimated days, the remaining work and the % completed can be calculated"
+        },
+        "EstimatedRoleLoad" : {
+          "type" : "array",
+          "description" : "the list of loads on people of each role during this phase",
+          "items" : {
+            "$ref" : "#/definitions/RoleLoad"
+          }
+        }
+      }
+    },
+    "RoleLoad" : {
+      "type" : "object",
+      "properties" : {
+        "RoleId" : {
+          "type" : "integer"
+        },
+        "Load" : {
+          "type" : "number",
+          "description" : "the load in FTEs in this role. This is a floating number."
+        }
+      }
+    },
+    "ProjectPhaseRoleLoadParameter" : {
+      "type" : "object",
+      "properties" : {
+        "Load" : {
+          "type" : "number",
+          "description" : "the load in FTEs in this role. This is a floating number."
+        }
+      }
+    },
+    "ProjectStructure" : {
+      "type" : "object",
+      "properties" : {
+        "Tasks" : {
+          "type" : "array",
+          "description" : "the top level of tasks. In these tasks no new tasks can be added since they are phases on the portfolio level. Also, ",
+          "items" : {
+            "$ref" : "#/definitions/ProjectStructureTask"
+          }
+        }
+      }
+    },
+    "ProjectStructureTask" : {
+      "type" : "object",
+      "properties" : {
+        "Id" : {
+          "type" : "integer",
+          "description" : "the ID of the task. If a new task is added (can be done on each level except the top level), use a unique ID starting with NewId:  e.g. NewId:1"
+        },
+        "FullLocalId" : {
+          "type" : "string",
+          "description" : "a unique ID for this task, starting with the project abbreviation. E.g. PRNTR-23"
+        },
+        "Name" : {
+          "type" : "string"
+        },
+        "Description" : {
+          "type" : "string"
+        },
+        "IsMilestone" : {
+          "type" : "boolean",
+          "description" : "is this task a milestone or not. If so, EstimatedDays does not make sense and is always 0. Also, EstimatedRoleLoad is not relevant. A milestone also cannot have subtasks."
+        },
+        "IsSummaryTask" : {
+          "type" : "boolean",
+          "description" : "read-only value to see if this is a summary task or not. A summary task has subtasks"
+        },
+        "IsCompleted" : {
+          "type" : "boolean",
+          "description" : "read-only value to see if the task is completely done. The setting of the value happens through the general task API"
+        },
+        "WorkflowId" : {
+          "type" : "integer",
+          "description" : "the workflowId a task should follow. This is not relevant for a task with subtasks."
+        },
+        "Dependencies" : {
+          "type" : "array",
+          "description" : "the list of tasks from which this task depends. Only FTS dependencies ar supported for now.",
+          "items" : {
+            "$ref" : "#/definitions/Dependency"
+          }
+        },
+        "EstimatedDays" : {
+          "type" : "number",
+          "description" : "the estimated days this task will take if all required roles are available. Note that of the task has subtasks, this field has no sense since the estimated days is then taken from the subtasks"
+        },
+        "EstimatedRoleLoad" : {
+          "type" : "array",
+          "description" : "the list of the load on the role required to fullfill the task in the EstimatedDays. In case the task has subtasks, this is the default role load for the subtasks",
+          "items" : {
+            "$ref" : "#/definitions/ProjectTaskRoleLoad"
+          }
+        },
+        "RoleWorkToDo" : {
+          "$ref" : "#/definitions/RoleWork"
+        },
+        "RoleWorkDone" : {
+          "$ref" : "#/definitions/RoleWork"
+        },
+        "Subtasks" : {
+          "type" : "array",
+          "description" : "the list of subtasks (recursive). The order is pertained by the server.",
+          "items" : {
+            "$ref" : "#/definitions/ProjectStructureTask"
+          }
+        },
+        "CanBeStarted" : {
+          "type" : "boolean",
+          "description" : "whether the project task can be started."
+        }
+      }
+    },
+    "RoleWork" : {
+      "type" : "object",
+      "properties" : {
+        "RoleID1" : {
+          "type" : "number",
+          "description" : "the number of days for role1"
+        },
+        "RoleID2" : {
+          "type" : "number",
+          "description" : "the number of days for role2, ..."
+        }
+      }
+    },
+    "CopyProjectTaskParamaters" : {
+      "type" : "object",
+      "properties" : {
+        "NewName" : {
+          "type" : "string",
+          "description" : "the name of the new, copied, task"
+        }
+      }
+    },
+    "Dependency" : {
+      "type" : "object",
+      "properties" : {
+        "Id" : {
+          "type" : "integer",
+          "description" : "the ID of the dependency"
+        },
+        "DependencyType" : {
+          "type" : "string",
+          "description" : "1 of 4 types of dependency: FinishToFinish, FinishToStart, StartToStart and StartToFinish"
+        },
+        "DelayDays" : {
+          "type" : "number",
+          "description" : "delay from the dependency to the task. This delay can be negative."
+        }
+      }
+    },
+    "ProjectTaskRoleLoad" : {
+      "type" : "object",
+      "properties" : {
+        "Id" : {
+          "type" : "integer",
+          "description" : "the ID of the role"
+        },
+        "Load" : {
+          "type" : "number",
+          "description" : "the load (in FTEs) required of this role"
+        }
+      }
+    },
+    "Routine" : {
+      "type" : "object",
+      "properties" : {
+        "Id" : {
+          "type" : "integer",
+          "description" : "a unique ID of the routine, generated by the server"
+        },
+        "Name" : {
+          "type" : "string",
+          "description" : "the name of the routine"
+        },
+        "WorkflowId" : {
+          "type" : "integer",
+          "description" : "the Id of the workflow tasks"
+        },
+        "DefaultPeriodId" : {
+          "type" : "integer",
+          "description" : "the Id of the default period. The default period has no start not end date and cannot be deleted"
+        },
+        "Periods" : {
+          "type" : "array",
+          "description" : "the list of routine periods, in an ordered list",
+          "items" : {
+            "$ref" : "#/definitions/RoutinePeriod"
+          }
+        },
+        "UserIds" : {
+          "$ref" : "#/definitions/UsersAccess"
+        },
+        "UserGroupIds" : {
+          "$ref" : "#/definitions/UserGroupsAccess"
+        }
+      }
+    },
+    "UsersAccess" : {
+      "type" : "object",
+      "properties" : {
+        "Id1" : {
+          "$ref" : "#/definitions/AccessCode"
+        },
+        "Id2..." : {
+          "$ref" : "#/definitions/AccessCode"
+        }
+      },
+      "description" : "for each userId the access codes"
+    },
+    "UserGroupsAccess" : {
+      "type" : "object",
+      "properties" : {
+        "Id1" : {
+          "$ref" : "#/definitions/AccessCode"
+        },
+        "Id2..." : {
+          "$ref" : "#/definitions/AccessCode"
+        }
+      },
+      "description" : "for each userGroupId the access codes"
+    },
+    "AccessCode" : {
+      "type" : "string",
+      "description" : "access codes"
+    },
+    "RoutinePeriod" : {
+      "type" : "object",
+      "properties" : {
+        "Id" : {
+          "type" : "integer",
+          "description" : "a unique ID of the routine period, generated by the server"
+        },
+        "Name" : {
+          "type" : "string",
+          "description" : "the name of the routine period."
+        },
+        "StartDate" : {
+          "type" : "string",
+          "description" : "The date on which the period starts. The format is YYYY-MM-DD"
+        },
+        "EndDate" : {
+          "type" : "string",
+          "description" : "Optional. The date on which the period ends. The format is YYYY-MM-DD"
+        },
+        "AutomaticallyScheduled" : {
+          "type" : "boolean",
+          "description" : "If true, tasks will be automatically generated according to the schedule"
+        },
+        "EstimatedRoleLoad" : {
+          "$ref" : "#/definitions/RoleLoads"
+        },
+        "Schedule" : {
+          "$ref" : "#/definitions/RoutinePeriodTaskSchedule"
+        }
+      }
+    },
+    "RoleLoads" : {
+      "type" : "object",
+      "properties" : {
+        "Id1" : {
+          "type" : "number",
+          "description" : "the load in FTEs in this role. This is a floating number."
+        },
+        "Id2..." : {
+          "type" : "number",
+          "description" : "the load in FTEs in this role. This is a floating number."
+        }
+      },
+      "description" : "for each role ID what the load is"
+    },
+    "RoutinePeriodTaskSchedule" : {
+      "type" : "object",
+      "properties" : {
+        "Frequency" : {
+          "type" : "string",
+          "description" : "One of the following values: Daily, Weekly, Monthly, Yearly"
+        },
+        "Interval" : {
+          "type" : "integer",
+          "description" : "e.g. every *2* weeks"
+        },
+        "OnWeekdays" : {
+          "type" : "boolean",
+          "description" : "on weekdays only"
+        },
+        "OnSpecificDays" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/DayOfWeek"
+          }
+        },
+        "DayNumber" : {
+          "type" : "integer",
+          "description" : "the number of the day of the month. E.g. 2 = second day of the month"
+        },
+        "OnSpecificDay" : {
+          "$ref" : "#/definitions/DayOfWeek"
+        },
+        "DayCount" : {
+          "type" : "integer",
+          "description" : "the xth Monday of the month"
+        },
+        "MonthNumber" : {
+          "type" : "integer",
+          "description" : "1=January, 2=February, ..."
+        }
+      },
+      "description" : "the time schedule for the tasks"
+    },
+    "DayOfWeek" : {
+      "type" : "string",
+      "description" : "Any of Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday"
+    },
+    "Timing" : {
+      "type" : "object",
+      "properties" : {
+        "Id" : {
+          "type" : "integer"
+        },
+        "EarliestStartTime" : {
+          "type" : "string",
+          "description" : "the timestamp when the task with the specified ID starts the earliest"
+        },
+        "EarliestEndTime" : {
+          "type" : "string",
+          "description" : "the timestamp when the task with the specified ID ends the earliest"
+        },
+        "LatestStartTime" : {
+          "type" : "string",
+          "description" : "the timestamp when the task with the specified ID starts the latest"
+        },
+        "LatestEndTime" : {
+          "type" : "string",
+          "description" : "the timestamp when the task with the specified ID ends the latest"
+        },
+        "Slack" : {
+          "type" : "number",
+          "description" : "the number of days this task can be delayed without the total project getting delay. This is 0 if the task is on the critical path"
+        }
+      }
+    },
+    "RoleLoad_1" : {
+      "type" : "object",
+      "properties" : {
+        "Load" : {
+          "type" : "number",
+          "description" : "the load in FTEs"
+        }
+      }
+    },
+    "AssignedToParameter" : {
+      "type" : "object",
+      "properties" : {
+        "AssignedToUserId" : {
+          "type" : "integer"
+        },
+        "AssignedToUserGroupId" : {
+          "type" : "integer"
+        },
+        "AssignedToRoleId" : {
+          "type" : "integer"
+        }
+      }
+    },
+    "DueDateParameter" : {
+      "type" : "object",
+      "properties" : {
+        "DueDate" : {
+          "type" : "string"
+        }
+      }
+    },
+    "taskRoleWorktoDo" : {
+      "type" : "object",
+      "properties" : {
+        "days" : {
+          "type" : "number"
+        }
+      }
+    },
+    "taskStatusInput" : {
+      "type" : "object",
+      "properties" : {
+        "CurrentStatusId" : {
+          "type" : "integer"
+        },
+        "NextStatusId" : {
+          "type" : "integer"
+        },
+        "IsInTaskWaiting" : {
+          "type" : "boolean"
+        }
+      }
+    },
+    "inline_response_200" : {
+      "properties" : {
+        "DeletedTaskIds" : {
+          "type" : "array",
+          "items" : {
+            "type" : "integer",
+            "description" : "the id of a ended / deleted task"
+          }
+        },
+        "UpdatedTasks" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Task"
+          }
+        }
+      },
+      "description" : "the tasks."
+    },
+    "updateProfileRequest" : {
+      "type" : "object",
+      "properties" : {
+        "PortfolioProfiles" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string",
+            "description" : "any of Champion, Strategist, WorkManager, KnowledgeWorker"
+          }
+        }
+      }
+    },
+    "param" : {
+      "type" : "object",
+      "properties" : {
+        "Name" : {
+          "type" : "string"
+        }
+      }
+    },
+    "param_1" : {
+      "type" : "object",
+      "properties" : {
+        "Name" : {
+          "type" : "string",
+          "description" : "the new name of the copy"
+        }
+      }
+    },
+    "environment" : {
+      "type" : "object",
+      "properties" : {
+        "Environment" : {
+          "type" : "string"
+        }
+      }
+    },
+    "Task_RoleWorkToDo" : {
+      "properties" : {
+        "RoleId1" : {
+          "type" : "number"
+        },
+        "RoleId2" : {
+          "type" : "number"
+        }
+      }
+    }
+  }
+}
