@@ -1,0 +1,292 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "Overview of the SeaSWIM access control end points",
+    "version" : "0.0.1",
+    "title" : "STM SeaSWIM Authorization API"
+  },
+  "schemes" : [ "https" ],
+  "paths" : {
+    "/access_control/{data_id}" : {
+      "get" : {
+        "summary" : "Provides access control lists according to different filters",
+        "description" : "The end point takes the request identity and matches against the write \naccess in the current acl write list. If the requester has write access \nto the specified data object the requester will receive a list of current \nuser identities which are granted access to read the data object. \n",
+        "parameters" : [ {
+          "name" : "requester_id",
+          "in" : "header",
+          "description" : "Unique requester identity from the STM identity registry that states \nwho wants to replace the current access control definitions. \n",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
+          "name" : "data_id",
+          "in" : "path",
+          "description" : "Unique data object identifiers that are generated when a data \nobject's access control list is created. Used to link the data object\nto the access specification. \n",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "An array of user_ids with read access that matches the data object's \nidentifier (data_id).\n",
+            "schema" : {
+              "$ref" : "#/definitions/ACL"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - Check speeling.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "401" : {
+            "description" : "Not authorized/authenticated - Please register and log in.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "403" : {
+            "description" : "Access forbidden - Check access rights for your identity.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "404" : {
+            "description" : "Resource Not Found - No data points found or invalid input.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "post" : {
+        "summary" : "Creates new access control lists to data object",
+        "description" : "The end point is called when a data object is made ready for \ndistribution in STM (data object is translated to the appropriate STM\nstandard) and an array of users identities have been defined. \n\nThe user who creates the data object and subsequently the access \ncontrol lists for that object is labeled as the data owner. The data \nowner has write access to all access control lists. \n\nThere are two access control lists for each data object (data-object \nread-access list and access-control write-access list). The data-object \nread-access list specifies which user identities have access to read \nthe data object. The access-control write-access list specifies which \nuser identities have access to write and update the list of users who \ncan read the data object. Only the owner can update the access-control \nwrite-access list of which user identities can grant and revoke access. \n\nThe variable \"all\" can be used instead of a user identity in the \ndata-object read-access list to signify that all STM user identities \nare allowed to read the data object. \n",
+        "parameters" : [ {
+          "name" : "owner_id",
+          "in" : "header",
+          "description" : "Unique user identity from the STM identity registry that defines \nownership to a data object.\n",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
+          "name" : "data_id",
+          "in" : "path",
+          "description" : "Unique data object identifiers that are generated when a data \nobject's access control list is created. Used to link the data object\nto the access specification. \n",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
+          "in" : "body",
+          "name" : "acl",
+          "description" : "Specification of what data object can be read by which users and \nwhich users can update the acl definition. \n",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/ACL"
+          }
+        } ],
+        "responses" : {
+          "201" : {
+            "description" : "Access definition created successfully for data object.",
+            "schema" : {
+              "type" : "boolean"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - Check speeling.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "401" : {
+            "description" : "Not authorized/authenticated - Please register and log in.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "403" : {
+            "description" : "Access forbidden - Check access rights for your identity.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "404" : {
+            "description" : "Resource Not Found - No data points found or invalid input.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "delete" : {
+        "summary" : "Deletes a data object's access definitions",
+        "description" : "The end point takes the request identity and matches against the owner \nidentity in the current acl. If the requester is the owner of the \nspecified data object all access definitions for the specified data \nobject will be deleted.\n",
+        "parameters" : [ {
+          "name" : "requester_id",
+          "in" : "header",
+          "description" : "Unique requester identity from the STM identity registry that states \nwho wants to replace the current access control definitions. \n",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
+          "name" : "data_id",
+          "in" : "path",
+          "description" : "Unique data object identifiers that are generated when a data \nobject's access control list is created. Used to link the data object\nto the access specification. \n",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successfully updated (patched) access control list",
+            "schema" : {
+              "type" : "boolean"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - Check speeling.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "401" : {
+            "description" : "Not authorized/authenticated - Please register and log in.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "403" : {
+            "description" : "Access forbidden - Check access rights for your identity.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "404" : {
+            "description" : "Resource Not Found - No data points found or invalid input.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "patch" : {
+        "summary" : "Modifies a data object's current access definitions",
+        "description" : "The end point takes the request identity and matches against the user \nidentities in the access-control write-access list. If the requester \nhas write access to the specified data object the specified user \nidentities will be granted access to it. \n",
+        "parameters" : [ {
+          "name" : "requester_id",
+          "in" : "header",
+          "description" : "Unique requester identity from the STM identity registry \nthat states who wants to replace the current access control definitions. \n",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
+          "name" : "data_id",
+          "in" : "path",
+          "description" : "Unique data object identifiers that are generated when a data \nobject's access control list is created. Used to link the data object\nto the access specification. \n",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
+          "in" : "body",
+          "name" : "operation",
+          "description" : "JSON patch description of changes to data access \n",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/patch_json"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successfully updated (patched) the access control list according\nto the request.\n",
+            "schema" : {
+              "type" : "boolean"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - Check speeling.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "401" : {
+            "description" : "Not authorized/authenticated - Please register and log in.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "403" : {
+            "description" : "Access forbidden - Check access rights for your identity.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "404" : {
+            "description" : "Resource Not Found - No data points found or invalid input.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "ACL" : {
+      "type" : "object",
+      "properties" : {
+        "data_read_user_id" : {
+          "type" : "array",
+          "description" : "Array of unique user identifiers with read access",
+          "items" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        },
+        "acl_write_user_id" : {
+          "type" : "array",
+          "description" : "Array of unique user identifiers with write access",
+          "items" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }
+      }
+    },
+    "patch_json" : {
+      "type" : "object",
+      "properties" : {
+        "op" : {
+          "type" : "string",
+          "description" : "Description of change - \"add\" or \"remove\""
+        },
+        "path" : {
+          "type" : "string",
+          "description" : "Path description to data read access (data_read) or ACL write access (acl_write)."
+        },
+        "user_id" : {
+          "type" : "array",
+          "description" : "Array of unique user identities to change",
+          "items" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }
+      }
+    },
+    "Error" : {
+      "type" : "object",
+      "properties" : {
+        "code" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "message" : {
+          "type" : "string"
+        },
+        "fields" : {
+          "type" : "string"
+        }
+      }
+    }
+  }
+}
