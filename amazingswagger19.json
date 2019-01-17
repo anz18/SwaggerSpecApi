@@ -1,0 +1,477 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "My gym workout API",
+    "version" : "0.0.1",
+    "title" : "Workout API"
+  },
+  "paths" : {
+    "/workouts/{user-id}" : {
+      "get" : {
+        "summary" : "Get custom user workouts",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "user-id",
+          "in" : "path",
+          "description" : "User ID",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Workout"
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "summary" : "Create a custom workout for a given user",
+        "operationId" : "createWorkout",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "user-id",
+          "in" : "path",
+          "description" : "User ID",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "description" : "Created workout object",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/Workout"
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "successful operation"
+          }
+        }
+      }
+    },
+    "/routines/{user-id}" : {
+      "get" : {
+        "summary" : "Get custom user workout routines",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "user-id",
+          "in" : "path",
+          "description" : "User ID",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "object",
+              "properties" : {
+                "meta" : {
+                  "$ref" : "#/definitions/inline_response_200_meta"
+                },
+                "data" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/definitions/Routine"
+                  }
+                },
+                "pagination" : {
+                  "type" : "object",
+                  "properties" : { }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "summary" : "Create a custom routine for a given user",
+        "operationId" : "createRoutine",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "user-id",
+          "in" : "path",
+          "description" : "User ID",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "description" : "Created routine object",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/Routine"
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "successful operation"
+          }
+        }
+      }
+    },
+    "/exercises/preconfigured" : {
+      "get" : {
+        "summary" : "Get pre-configured exercises",
+        "produces" : [ "application/json" ],
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "object",
+              "properties" : {
+                "meta" : {
+                  "$ref" : "#/definitions/inline_response_200_meta"
+                },
+                "data" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/definitions/Exercise"
+                  }
+                },
+                "pagination" : {
+                  "type" : "object",
+                  "properties" : { }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/exercises/{user-id}" : {
+      "get" : {
+        "summary" : "Get custom user exercise",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "user-id",
+          "in" : "path",
+          "description" : "User ID",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "object",
+              "properties" : {
+                "meta" : {
+                  "$ref" : "#/definitions/inline_response_200_meta"
+                },
+                "data" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/definitions/Exercise"
+                  }
+                },
+                "pagination" : {
+                  "type" : "object",
+                  "properties" : { }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "summary" : "Create a custom exercise for a given user",
+        "operationId" : "createExercise",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "user-id",
+          "in" : "path",
+          "description" : "User ID",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "description" : "Created exercise object",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/Exercise"
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "successful operation"
+          }
+        }
+      }
+    },
+    "/users" : {
+      "post" : {
+        "tags" : [ "user" ],
+        "summary" : "Create user",
+        "description" : "This can only be done by the logged in user.",
+        "operationId" : "createUser",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "description" : "Created user object",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/User"
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "successful operation"
+          }
+        }
+      }
+    },
+    "/users/login" : {
+      "get" : {
+        "tags" : [ "user" ],
+        "summary" : "Logs user into the system",
+        "description" : "",
+        "operationId" : "loginUser",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "username",
+          "in" : "query",
+          "description" : "The user name for login",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "password",
+          "in" : "query",
+          "description" : "The password for login in clear text",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "string"
+            }
+          },
+          "400" : {
+            "description" : "Invalid username/password supplied"
+          }
+        }
+      }
+    },
+    "/users/logout" : {
+      "get" : {
+        "tags" : [ "user" ],
+        "summary" : "Logs out current logged in user session",
+        "description" : "",
+        "operationId" : "logoutUser",
+        "produces" : [ "application/json" ],
+        "parameters" : [ ],
+        "responses" : {
+          "default" : {
+            "description" : "successful operation"
+          }
+        }
+      }
+    },
+    "/users/{user-id}" : {
+      "get" : {
+        "summary" : "Get user by user id",
+        "description" : "",
+        "operationId" : "getUserById",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "user-id",
+          "in" : "path",
+          "description" : "User ID",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/User"
+            }
+          },
+          "400" : {
+            "description" : "Invalid username supplied"
+          },
+          "404" : {
+            "description" : "User not found"
+          }
+        }
+      },
+      "put" : {
+        "summary" : "Updated user",
+        "description" : "This can only be done by the logged in user.",
+        "operationId" : "updateUser",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "user-id",
+          "in" : "path",
+          "description" : "User ID",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "description" : "Updated user object",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/User"
+          }
+        } ],
+        "responses" : {
+          "400" : {
+            "description" : "Invalid user supplied"
+          },
+          "404" : {
+            "description" : "User not found"
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "Workout" : {
+      "type" : "object",
+      "properties" : {
+        "routines" : {
+          "$ref" : "#/definitions/Routine"
+        }
+      }
+    },
+    "Routine" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "exercises" : {
+          "$ref" : "#/definitions/Exercise"
+        }
+      },
+      "description" : "A logical grouping of exercises that a user defines. For example, \"Legs\",\n\"Chest and Shoulders\", etc.\n"
+    },
+    "Exercise" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "description" : {
+          "type" : "string"
+        },
+        "sets" : {
+          "$ref" : "#/definitions/Set"
+        }
+      },
+      "description" : "Defines an exercise instruction. For example, \"Bench Press routine that \nconsists of 3 x sets of 10 reps of lifting 80kg weights.\n"
+    },
+    "Set" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer"
+        },
+        "count" : {
+          "type" : "number"
+        },
+        "unit" : {
+          "type" : "string",
+          "description" : "Unit of measurement e.g. 'kg', 'lb', 'skips', 'metres'\n"
+        },
+        "reps" : {
+          "type" : "integer"
+        }
+      },
+      "description" : "Defines the make up of a single set instance for a given Exercise - \ne.g. 6 reps of 8kg, 3 reps of 50 skips\n"
+    },
+    "User" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "username" : {
+          "type" : "string"
+        },
+        "firstName" : {
+          "type" : "string"
+        },
+        "lastName" : {
+          "type" : "string"
+        },
+        "email" : {
+          "type" : "string"
+        },
+        "password" : {
+          "type" : "string"
+        },
+        "phone" : {
+          "type" : "string"
+        },
+        "userStatus" : {
+          "type" : "integer",
+          "format" : "int32",
+          "description" : "User Status"
+        }
+      }
+    },
+    "inline_response_200_meta" : {
+      "properties" : {
+        "code" : {
+          "type" : "integer"
+        }
+      }
+    },
+    "inline_response_200" : {
+      "properties" : {
+        "meta" : {
+          "$ref" : "#/definitions/inline_response_200_meta"
+        },
+        "data" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Routine"
+          }
+        },
+        "pagination" : {
+          "type" : "object",
+          "properties" : { }
+        }
+      }
+    },
+    "inline_response_200_1" : {
+      "properties" : {
+        "meta" : {
+          "$ref" : "#/definitions/inline_response_200_meta"
+        },
+        "data" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Exercise"
+          }
+        },
+        "pagination" : {
+          "type" : "object",
+          "properties" : { }
+        }
+      }
+    }
+  }
+}
