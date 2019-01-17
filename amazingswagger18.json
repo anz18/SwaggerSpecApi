@@ -1,0 +1,77 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "API for UTM",
+    "version" : "0.0.1-de",
+    "title" : "UserTaskManager (UTM)"
+  },
+  "basePath" : "/vl",
+  "paths" : {
+    "/banks/{bankNummer}/bankangestellte" : {
+      "get" : {
+        "description" : "Mit dieser Funktion werden alle aktiven Bankangestellten (User) einer bestimmten Bank aus Finnova gelesen.",
+        "parameters" : [ {
+          "name" : "bankNummer",
+          "in" : "path",
+          "description" : "Finnova USERBK_NR (key for SR1USBK) Banknummer ist >0 und <=9999.",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Erfolgreiche Antwort",
+            "schema" : {
+              "$ref" : "#/definitions/bankangestellteAntwort"
+            }
+          },
+          "404" : {
+            "description" : "Die Bank konnte gemäss Bankenidentifikation nicht gefunden werden."
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "bankangestellteAntwort" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string",
+          "description" : "Identifikation des Finnova-Benutzers (Bankangestellter) USER_ID.",
+          "maxLength" : 10
+        },
+        "kundenNummer" : {
+          "type" : "number",
+          "description" : "Technische Kundennummer des Angestellten KD_LNR."
+        },
+        "bezeichnung" : {
+          "$ref" : "#/definitions/bankangestellteAntwort_bezeichnung"
+        },
+        "abteilung" : {
+          "type" : "string",
+          "description" : "Abteilung des Finnova-Benutzers als Code ABT_CD. Die gewünschte Bezeichnung muss über getCodes bezogen werden.",
+          "maxLength" : 4
+        }
+      }
+    },
+    "bankangestellteAntwort_bezeichnung" : {
+      "properties" : {
+        "kurz" : {
+          "type" : "string",
+          "description" : "Name (kurz) des Finnova-Benutzers USER_KURZ_BEZ.",
+          "maxLength" : 5
+        },
+        "mittel" : {
+          "type" : "string",
+          "description" : "Name (mittel) des Finnova-Benutzers USER_MITTEL_BEZ.",
+          "maxLength" : 15
+        },
+        "lang" : {
+          "type" : "string",
+          "description" : "Name (lang) des Finnova-Benutzers USER_LANG_BEZ.",
+          "maxLength" : 80
+        }
+      }
+    }
+  }
+}
