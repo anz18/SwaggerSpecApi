@@ -1,0 +1,256 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "Mobile payment API",
+    "version" : "2.0.0",
+    "title" : "MATAC API"
+  },
+  "schemes" : [ "https" ],
+  "consumes" : [ "application/json" ],
+  "produces" : [ "application/json" ],
+  "security" : [ {
+    "Authorization" : [ ]
+  } ],
+  "paths" : {
+    "/payments" : {
+      "post" : {
+        "tags" : [ "payments" ],
+        "summary" : "Method to add a payment request",
+        "description" : "Method to add a payment request",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "description" : "Payment object",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/payment"
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "If request is succesful respnse code will be 200",
+            "schema" : {
+              "type" : "object",
+              "properties" : {
+                "responseDetails" : {
+                  "$ref" : "#/definitions/responseDetails"
+                },
+                "payment" : {
+                  "$ref" : "#/definitions/payment"
+                },
+                "controlCode" : {
+                  "type" : "string",
+                  "example" : "135",
+                  "description" : "Control code for mobile signature. Must be shown to the user."
+                },
+                "links" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/definitions/link"
+                  }
+                }
+              },
+              "title" : "body"
+            }
+          }
+        }
+      }
+    },
+    "/payments/{id}" : {
+      "get" : {
+        "tags" : [ "payments" ],
+        "summary" : "Get payment details by payment ID",
+        "description" : "Get payment details by payment ID",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "Payment ID returned by MATAC",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "If request is succesful respnse code will be 200",
+            "schema" : {
+              "type" : "object",
+              "properties" : {
+                "responseMessage" : {
+                  "$ref" : "#/definitions/responseDetails"
+                },
+                "payment" : {
+                  "$ref" : "#/definitions/payment"
+                },
+                "links" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/definitions/link"
+                  }
+                }
+              },
+              "title" : "body"
+            }
+          }
+        }
+      }
+    }
+  },
+  "securityDefinitions" : {
+    "Authorization" : {
+      "type" : "apiKey",
+      "name" : "Authorization",
+      "in" : "header"
+    }
+  },
+  "definitions" : {
+    "payment" : {
+      "type" : "object",
+      "required" : [ "amount", "description", "intent", "payer" ],
+      "properties" : {
+        "intent" : {
+          "type" : "string",
+          "description" : "Payment intent. Currently only SALE  is suported",
+          "enum" : [ "SALE", "P2P" ]
+        },
+        "payer" : {
+          "$ref" : "#/definitions/user"
+        },
+        "paymentAccount" : {
+          "type" : "string",
+          "description" : "Account from which payment will be funded. Currently only DEFAULT is suported",
+          "enum" : [ "DEFAULT" ]
+        },
+        "beneficiary" : {
+          "$ref" : "#/definitions/user"
+        },
+        "amount" : {
+          "type" : "number",
+          "format" : "float",
+          "example" : 10.15,
+          "description" : "Total payment ammount"
+        },
+        "currency" : {
+          "type" : "string",
+          "description" : "Payment currency. Currently only EUR is supported",
+          "enum" : [ "EUR" ]
+        },
+        "description" : {
+          "type" : "string",
+          "example" : "Test payment",
+          "description" : "Description for payment transaction."
+        },
+        "orderId" : {
+          "type" : "string",
+          "description" : "Order ID in beneficiary's system."
+        },
+        "id" : {
+          "type" : "string",
+          "description" : "ID of the created payment. Value assigned by MATAC."
+        },
+        "status" : {
+          "type" : "string",
+          "description" : "Status of the created payment. Value assigned by MATAC.",
+          "enum" : [ "NEW", "EXECUTED", "REJECTED", "REJECTED_BYBANK", "REJECTED_BYBENEFICIARY", "SIGNED" ]
+        },
+        "postbackUrl" : {
+          "type" : "string",
+          "example" : "https://mydomain.com/paymentstatus",
+          "description" : "URL where payment excecution status should be returned. If left empty, payment status must be checked using links provided in the response."
+        }
+      }
+    },
+    "user" : {
+      "type" : "object",
+      "properties" : {
+        "userCode" : {
+          "type" : "string",
+          "example" : "38506070011",
+          "description" : "Personal code or legal entity's code."
+        },
+        "userPhone" : {
+          "type" : "string",
+          "example" : "37061213300",
+          "description" : "User's phone numeber"
+        }
+      },
+      "description" : "MATAC registered user's information. When posting payment request eather userCode or userPhone must be provided for the paying party."
+    },
+    "link" : {
+      "type" : "object",
+      "properties" : {
+        "href" : {
+          "type" : "string",
+          "example" : "https://matac.lt/api/payments/123456"
+        },
+        "rel" : {
+          "type" : "string",
+          "description" : "Link relation that describes how this link relates to the object.",
+          "enum" : [ "SELF", "REFUND" ]
+        },
+        "method" : {
+          "type" : "string",
+          "description" : "The HTTP method required for the related call.",
+          "enum" : [ "POST", "GET", "DELETE" ]
+        }
+      },
+      "description" : "Link related to the object"
+    },
+    "responseDetails" : {
+      "type" : "object",
+      "properties" : {
+        "responseType" : {
+          "type" : "string",
+          "enum" : [ "success", "warn", "error", "info" ]
+        },
+        "msgCode" : {
+          "type" : "string",
+          "example" : "GEN_CustomerNotFound"
+        },
+        "msgCodeTranslation" : {
+          "type" : "string",
+          "description" : "Human readable translation for message code"
+        },
+        "msgSystemText" : {
+          "type" : "string",
+          "description" : "System generated message text for debugging purpses"
+        }
+      }
+    },
+    "body" : {
+      "properties" : {
+        "responseDetails" : {
+          "$ref" : "#/definitions/responseDetails"
+        },
+        "payment" : {
+          "$ref" : "#/definitions/payment"
+        },
+        "controlCode" : {
+          "type" : "string",
+          "example" : "135",
+          "description" : "Control code for mobile signature. Must be shown to the user."
+        },
+        "links" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/link"
+          }
+        }
+      }
+    },
+    "body_1" : {
+      "properties" : {
+        "responseMessage" : {
+          "$ref" : "#/definitions/responseDetails"
+        },
+        "payment" : {
+          "$ref" : "#/definitions/payment"
+        },
+        "links" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/link"
+          }
+        }
+      }
+    }
+  }
+}
